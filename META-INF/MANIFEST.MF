@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ***CHANGE ME*** SAMPLE: DL Query Tab
-Bundle-SymbolicName: ***CHANGE ME*** SAMPLE: org.coode.dlquery;singleton:=true
+Bundle-Name: Domain OWL
+Bundle-SymbolicName: org.protege.editor.owl.ning.domainOWLTab;singleton:=true
 Bundle-Category: protege
-Bundle-Description: ***CHANGE ME*** SAMPLE: A Plugin allowing dl queries in the  Protege OWL Editor
-Bundle-Vendor: ***CHANGE ME*** SAMPLE: The CO-ODE Group
-Bundle-DocURL: ***CHANGE ME*** SAMPLE: http://www.co-ode.org
+Bundle-Description: A plugin to query more specific domain knowledge from a general owl
+Bundle-Vendor: ning
+Bundle-DocURL: http://www.i.nothaveyet.org
 Bundle-ClassPath: .
 Import-Package: org.osgi.framework,
  org.apache.log4j,
