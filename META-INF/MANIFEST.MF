@@ -6,7 +6,7 @@ Bundle-Category: protege
 Bundle-Description: A plugin to query more specific domain knowledge from a general owl
 Bundle-Vendor: ning
 Bundle-DocURL: http://www.i.nothaveyet.org
-Bundle-ClassPath: .
+Bundle-ClassPath: .,lib/examplelib.jar
 Import-Package: org.osgi.framework,
  org.apache.log4j,
  javax.swing,
