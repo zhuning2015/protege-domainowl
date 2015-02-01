@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+  <extension id="DomainOWLViewComponent"
+             point="org.protege.editor.core.application.ViewComponent">
+    <label value="DomainOWL View Component"/>
+    <class
+        value="org.protege.editor.owl.ning.tab.DomainOWLViewComponent"/>
+    <category value="@org.protege.ontologycategory"/>
+  </extension>
+  <extension id="DomainOWLWorkspaceTab"
+             point="org.protege.editor.core.application.WorkspaceTab">
+    <label value="Domain OWL"/>
+    <class value="org.protege.editor.owl.ui.OWLWorkspaceViewsTab"/>
+    <index value="X"/>
+    <editorKitId value="OWLEditorKit"/>
+    <defaultViewConfigFileName value="viewconfig-domainOWLTab.xml"/>
+  </extension>
+</plugin>
