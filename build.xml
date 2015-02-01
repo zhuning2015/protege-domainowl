@@ -73,6 +73,8 @@
      <mkdir dir = "${classes}"/>
      <mkdir dir = "${classes}/lib"/>
      <mkdir dir = "${genlib}"/>
+     <copy tofile= "${genlib}/log4j.jar"
+           file = "${lib}/log4j.jar" overwrite="true"/>
      <condition property="use.bundlor">
        <and>
          <available file="${bundlor.home}"     type = "dir"/>
