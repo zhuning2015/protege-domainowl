@@ -1,6 +1,8 @@
 package org.protege.editor.owl.ning.domainOWL;
 
 import java.util.HashMap;
+import org.protege.editor.owl.ning.exception.AddSameDomainConceptException;
+import org.protege.editor.owl.ning.exception.AddDomainConceptWithSameNameException;
 
 /**
  * The domain ontology class. It's the root for domain concepts, domain * relations.
@@ -21,7 +23,31 @@ public class DomainOntology extends NamedObject
      */
     public void addDomainConcept(DomainConcept dc)
     {
+        DomainConcept oldDc = getDomainConcept(dc.getName());
+        if (oldDc != null)
+        {
+            if (oldDc == dc)
+            {
+                throw new AddSameDomainConceptException("Add a same domain concept");
+            }else
+            {
+                throw new AddDomainConceptWithSameNameException("Add a domain concpet with the same name of some existed domain concept");
+            }
+        }
         domainConcepts.put(dc.getName(), dc);
+    }
+
+    /**
+     * Get the domain concept with name  dcName
+     * @param dcName the name of the domain concept to get
+     * @return The domain concept with the name. Null if the domain concept doesn't exit
+     */
+    public DomainConcept getDomainConcept(String dcName)
+    {
+        if (containsDomainConcept(dcName))
+            return domainConcepts.get(dcName);
+        else
+            return null;
     }
 
     /**
