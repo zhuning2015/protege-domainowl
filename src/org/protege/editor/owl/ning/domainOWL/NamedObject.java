@@ -13,6 +13,11 @@ public abstract class NamedObject
      */
     private String name;
 
+    public NamedObject(String name)
+    {
+        setName(name);
+    }
+
     /**
      * Sets the name of the named object
      * @param name the name for the named object

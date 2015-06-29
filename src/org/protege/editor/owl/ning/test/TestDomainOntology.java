@@ -21,7 +21,7 @@ public class TestDomainOntology
     @Before
     public void init()
     {
-        domainOnt = new DomainOntology();
+        domainOnt = DomainOntology.create("TestOntolgy");
     }
 
     @Test
@@ -29,10 +29,7 @@ public class TestDomainOntology
     {
         assertFalse(domainOnt.containsDomainConcept("test"));
 
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-
-        domainOnt.addDomainConcept(dc);
+        DomainConcept.create("test");
 
         assertTrue(domainOnt.containsDomainConcept("test"));
     }
@@ -40,31 +37,21 @@ public class TestDomainOntology
     @Test(expected=AddSameDomainConceptException.class)
     public void TestAddDomainConcept_Same()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-
-        domainOnt.addDomainConcept(dc);
+        DomainConcept dc = DomainConcept.create("test");
         domainOnt.addDomainConcept(dc);
     }
 
     @Test(expected=AddDomainConceptWithSameNameException.class)
     public void TestAddDomainConcept_SameName()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-        domainOnt.addDomainConcept(dc);
-
-        DomainConcept dc2 = new DomainConcept();
-        dc2.setName("test");
-        domainOnt.addDomainConcept(dc2);
+        DomainConcept.create("test");
+        DomainConcept.create("test");
     }
 
     @Test
     public void TestGetDomainConcept()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-        domainOnt.addDomainConcept(dc);
+        DomainConcept.create("test");
 
         assertNotNull(domainOnt.getDomainConcept("test"));
         assertNull(domainOnt.getDomainConcept("another"));
@@ -73,9 +60,7 @@ public class TestDomainOntology
     @Test
     public void TestUpdateDomainConcept()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-        domainOnt.addDomainConcept(dc);
+        DomainConcept dc = DomainConcept.create("test");
 
         domainOnt.updateDomainConcept(dc,"test","test1");
 
@@ -86,9 +71,7 @@ public class TestDomainOntology
     @Test
     public void TestContainsDomainConcept()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-        domainOnt.addDomainConcept(dc);
+        DomainConcept dc = DomainConcept.create("test");
 
         assertTrue(domainOnt.containsDomainConcept("test"));
         assertFalse(domainOnt.containsDomainConcept("another"));
@@ -97,11 +80,9 @@ public class TestDomainOntology
     @Test
     public void TestRemoveDomainConcept()
     {
-        DomainConcept dc = new DomainConcept();
-        dc.setName("test");
-        domainOnt.addDomainConcept(dc);
+        DomainConcept dc = DomainConcept.create("test");
 
-        domainOnt.removeDomainConcept(dc);
+        domainOnt.removeDomainConcept("test");
         assertFalse(domainOnt.containsDomainConcept(dc.getName()));
     }
 }

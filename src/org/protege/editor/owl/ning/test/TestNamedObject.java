@@ -19,7 +19,7 @@ public class TestNamedObject
     @Before
     public void init()
     {
-        namedObject = new NamedObject(){};
+        namedObject = new NamedObject("test"){};
     }
 
     @Test

@@ -3,23 +3,62 @@ package org.protege.editor.owl.ning.domainOWL;
 import java.util.HashMap;
 import org.protege.editor.owl.ning.exception.AddSameDomainConceptException;
 import org.protege.editor.owl.ning.exception.AddDomainConceptWithSameNameException;
+import org.protege.editor.owl.ning.exception.NullDomainOntologyException;
 
 /**
  * The domain ontology class. It's the root for domain concepts, domain * relations.
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class DomainOntology extends NamedObject
 {
     /**
-     * A hashmap-structured field for storing domain concepts
+     * A hash map storing domain concepts
      */
     private HashMap<String, DomainConcept> domainConcepts =
         new HashMap<String, DomainConcept>();
 
     /**
-     * Adds an domain concept to the domain ontology
-     * @param dc The domain concept to be added
+     * A hash map storing domain relations
+     */
+    private Hashmap<String, DomainRelation> domainRelations =
+        new HashMap<String, DomainRelation>();
+
+    /**
+     * The single domain ontology at a time spot
+     */
+    static DomainOntology singleDomainOntology = null;
+
+    private DomainOntology(String name)
+    {
+        super(name);
+    }
+
+    /**
+     * Creates a domain ontology with the name
+     * @param name the name of the domainontology to be created
+     * @return the domain ontology created
+     */
+    public static DomainOntology create(String name)
+    {
+        singleDomainOntology = new DomainOntology(name);
+        return singleDomainOntology;
+    }
+
+    /**
+     * Gets the domain ontology present
+     * @return the present domain ontology
+     */
+    public static DomainOntology getDomainOntology()
+    {
+        if (singleDomainOntology == null)
+            throw new NullDomainOntologyException("The present domain ontology is null");
+        return singleDomainOntology;
+    }
+
+    /**
+     * Adds a domain concept to the domain ontology
+     * @param dc The domain concept to add
      */
     public void addDomainConcept(DomainConcept dc)
     {
@@ -38,9 +77,20 @@ public class DomainOntology extends NamedObject
     }
 
     /**
-     * Get the domain concept with name  dcName
+     * Adds a domain relation to the domain ontology
+     * @param dr The domain relation to add
+     */
+    public void addDomainRelation(DomainRelation dr)
+    {
+        DomainRelation oldDr = getDomainRelation(dr.getName());
+
+    }
+
+    /**
+     * Gets the domain concept with name  dcName
      * @param dcName the name of the domain concept to get
-     * @return The domain concept with the name. Null if the domain concept doesn't exit
+     * @return The domain concept with the name dcName. Null if the
+     * domain concept doesn't exist.
      */
     public DomainConcept getDomainConcept(String dcName)
     {
@@ -51,14 +101,41 @@ public class DomainOntology extends NamedObject
     }
 
     /**
-     * Check if there exsits a domain concept called dcName in the
+     * Gets the domain relation with name drName
+     * @param drName the name of the domain relation to get
+     * @return The domain relation with the name drName. Null if the
+     * domain relation doesn't exist.
+     */
+     public DomainRelation getDomainRelation(String drName)
+     {
+         if (containsDomainRelation(drName))
+             return domainRelations.get(drName);
+         else
+             return null;
+     }
+
+    /**
+     * Checks if there exists a domain concept called dcName in the
      * domain ontology
-     * @param dcName the name of some domain concept
-     * @return true if there exists, false if there doesn't exist
+     * @param dcName The name of some domain concept
+     * @return True if there exists such a domain concept, false if
+     * not
      */
     public boolean containsDomainConcept(String dcName)
     {
         return domainConcepts.containsKey(dcName);
+    }
+
+    /**
+     * Checks if there exists a domain relation called drName in the
+     * domain ontology
+     * @param drName The name of some domain relation
+     * @return True if there exists such a domain relation, false if
+     * not
+     */
+    public boolean containsDomainRelation(String drName)
+    {
+        return domainRelations.containsKey(drName);
     }
 
     /**
@@ -77,10 +154,10 @@ public class DomainOntology extends NamedObject
 
     /**
      * Removes a domain concept from the domain ontology
-     * @param dc The domain concept to be removed
+     * @param dcName The domain concept to be removed
      */
-    public void removeDomainConcept(DomainConcept dc)
+    public void removeDomainConcept(String dcName)
     {
-        domainConcepts.remove(dc.getName());
+        domainConcepts.remove(dcName);
     }
 }
