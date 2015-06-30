@@ -1,5 +1,7 @@
 package org.protege.editor.owl.ning.domainOWL;
 
+import org.protege.editor.owl.ning.exception.NullNameException;
+
 /**
  * The domain relation class representing the customized relation from
  * the meta ontology relation
@@ -31,6 +33,11 @@ public class DomainRelation extends NamedObject
      */
     public static DomainRelation create(String name)
     {
+        if (name.isEmpty())
+            throw new NullNameException("The name of the specified domain relation is null");
+        if (name.trim().isEmpty())
+            throw new NullNameException("The chars consisting the name of the specified domain relation are all spaces");
+
         DomainRelation dr = new DomainRelation(name);
 
         DomainOntology dt = DomainOntology.getDomainOntology();
@@ -46,10 +53,19 @@ public class DomainRelation extends NamedObject
     public void setSrc(String srcDcName)
     {
         if (srcDcName.isEmpty())
-            return;
+            throw new NullNameException("The name of the specified source domain concept is empty");
         if (srcDcName.trim().isEmpty())
-            return;
+            throw new NullNameException("The chars consisting the name of the specified source domain concept are all spaces");
         this.srcDcName = srcDcName;
+    }
+
+    /**
+     * Get the name of the source domain concept
+     * @return The name of the source domain concept
+     */
+    public String getSrc()
+    {
+        return srcDcName;
     }
 
     /**
@@ -59,9 +75,18 @@ public class DomainRelation extends NamedObject
     public void setDst(String dstDcName)
     {
         if (dstDcName.isEmpty())
-            return;
+            throw new NullNameException("The name of the specified source domain concept is empty");
         if (dstDcName.trim().isEmpty())
-            return;
+            throw new NullNameException("The chars consisting the name of the specified source domain concept are all spaces");
         this.dstDcName = dstDcName;
+    }
+
+    /**
+     * Get the name of the destination domain concept of the relation
+     * @return The name of the destination domain concept
+     */
+    public String getDst()
+    {
+        return dstDcName;
     }
 }
