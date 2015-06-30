@@ -2,9 +2,9 @@ package org.protege.editor.owl.ning.exception;
 
 import java.lang.RuntimeException;
 
-public class AddSameOneException extends RuntimeException
+public class BasicException extends RuntimeException
 {
-    public AddSameOneException(String msg)
+    public BasicException(String msg)
     {
         super(msg);
     }
