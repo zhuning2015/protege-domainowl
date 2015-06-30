@@ -407,6 +407,7 @@ author=Matthew Horridge for the CO-ODE project
        <packageset dir="${src}" defaultexcludes="yes">
          <include name="org/protege/editor/owl/ning/domainOWL/**"/>
          <include name="org/protege/editor/owl/ning/tab/**"/>
+         <include name="org/protege/editor/owl/ning/exception/**"/>
        </packageset>
        <doctitle><![CDATA[<h1>${plugin}</h1>]]></doctitle>
 <!--       <bottom><![CDATA[<i>Copyright &#169; 2015. All Rights Reserved.</i>]]></bottom>-->
