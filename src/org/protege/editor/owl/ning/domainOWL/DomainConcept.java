@@ -2,6 +2,7 @@ package org.protege.editor.owl.ning.domainOWL;
 
 import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
+import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,16 @@ public class DomainConcept extends NamedObject
      */
     ArrayList<String> incomingRelations = new ArrayList<String>();
 
+    /**
+     * The corresponding meta concept in the meta ontology
+     */
+    private MetaConcept meta = null;
+
+    /**
+     * The corresponding instance in the meta ontology
+     */
+    private Instance correspond = null;
+
     private DomainConcept(String name)
     {
         super(name);
@@ -35,6 +46,8 @@ public class DomainConcept extends NamedObject
      * Creates a domain concept whose name is name
      * @param name The name of the domain concept created to create
      * @return The domain concept created
+     * @exception BasicException Throws when the name spefied is empty
+     *         or blank
      */
     public static DomainConcept create(String name)
     {
@@ -50,6 +63,8 @@ public class DomainConcept extends NamedObject
     /**
      * Adds an outgoing relation to the domain concept
      * @param relationName The name of the outgoing relation
+     * @exception BasicException Throws when adding another same
+     *        outgoing relation
      */
     public void addOutgoingRelation(String relationName)
     {
@@ -60,10 +75,11 @@ public class DomainConcept extends NamedObject
     }
 
     /**
-     * Chceks if the domain concept contains a outgoing relation called
+     * Chceks if the domain concept contains an outgoing relation called
      * relationName
      * @param relationName The name of the outgoing relation to check
-     * @return True if it contains such a relation, false otherwise
+     * @return True if the domain concept contains such a relation,
+     *         false otherwise
      */
     public boolean containsOutgoingRelation(String relationName)
     {
@@ -81,7 +97,9 @@ public class DomainConcept extends NamedObject
 
     /**
      * Adds an incoming relation to the domain concept
-     * @param relationName The name of the incoming relation to be added
+     * @param relationName The name of the incoming relation to add
+     * @exception BasicException Throws when adding another same
+     *        incoming relation
      */
     public void addIncomingRelation(String relationName)
     {
@@ -109,5 +127,25 @@ public class DomainConcept extends NamedObject
     public void removeIncomingRelation(String relationName)
     {
         incomingRelations.remove(relationName);
+    }
+
+    /**
+     * Sets the meta concept of the domain concept
+     * @param mc The meta concept to specify the domain concept
+     */
+    public void setMetaConcept(MetaConcept mc)
+    {
+        meta = mc;
+    }
+
+    /**
+     * Sets the corresponding instance in the meta ontolgy of the
+     * domain ontology
+     * @param ins The corresponding instance to specify the domain
+     *        concept
+     */
+    public void setCorrespondInstance(Instance ins)
+    {
+        correspond = ins;
     }
 }

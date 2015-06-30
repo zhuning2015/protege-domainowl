@@ -10,7 +10,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
 public class DomainOntology extends NamedObject
 {
     /**
-     * A DomainConcept-type OntologyComponent storing domain concepts
+     * A DomainConcept-type OntologyContainer storing domain concepts
      */
     private OntologyContainer<DomainConcept> domainConcepts =
         new OntologyContainer<DomainConcept>();
@@ -35,6 +35,8 @@ public class DomainOntology extends NamedObject
      * Creates a domain ontology with the name
      * @param name the name of the domainontology to be created
      * @return the domain ontology created
+     * @exception BasicException Throws when the name is empty or
+     *         blank
      */
     public static DomainOntology create(String name)
     {
@@ -48,6 +50,8 @@ public class DomainOntology extends NamedObject
     /**
      * Gets the domain ontology present
      * @return the present domain ontology
+     * @exception BasicException Throws when the present domain
+     *         ontology is null
      */
     public static DomainOntology getDomainOntology()
     {

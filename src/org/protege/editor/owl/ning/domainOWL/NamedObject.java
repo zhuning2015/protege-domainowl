@@ -39,6 +39,15 @@ public abstract class NamedObject
         return name;
     }
 
+    /**
+     * Checks if the name is valid
+     * @param name The name specified
+     * @param excptMsgIfEmpty The exception message when the name is
+     * empty
+     * @param excptMsgIfBlank The exception message when the name is
+     * blank
+     * @exception BasicException Throws when the name is empty or blank
+     */
     public static void checkName(String name, String excptMsgIfEmpty, String excptMsgIfBlank)
     {
         if (name.isEmpty())

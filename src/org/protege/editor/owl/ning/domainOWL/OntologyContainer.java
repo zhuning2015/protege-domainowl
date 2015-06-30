@@ -7,9 +7,10 @@ import org.protege.editor.owl.ning.exception.BasicException;
 import java.util.HashMap;
 
 /**
- * The template class representing containers of domain concepts, domain * relations and so on.
+ * The template class representing containers of domain concepts,
+ * domain relations and so on.
  * @author Zhu Ning
- * @versioin 0.0.1
+ * @version 0.0.1
  */
 public class OntologyContainer<T extends NamedObject>
 {
@@ -22,8 +23,8 @@ public class OntologyContainer<T extends NamedObject>
     /**
      * Adds a component
      * @param component The component to add
-     * @throws AddSameOneException
-     * @throws AddOnesWithSameNameException
+     * @exception BasicException Throw when duplicate name or same
+     *        component to add
      */
     public void addComponent(T component)
     {

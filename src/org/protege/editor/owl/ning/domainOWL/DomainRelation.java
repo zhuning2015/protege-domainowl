@@ -2,6 +2,7 @@ package org.protege.editor.owl.ning.domainOWL;
 
 import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
+import org.protege.editor.owl.ning.domainOWL.MetaRelation;
 
 /**
  * The domain relation class representing the customized relation from
@@ -22,6 +23,11 @@ public class DomainRelation extends NamedObject
      */
     private String dstDcName = "";
 
+    /**
+     * The corresponding meta relation in the meta ontology
+     */
+    private MetaRelation meta = null;
+
     public DomainRelation(String name)
     {
         super(name);
@@ -31,6 +37,7 @@ public class DomainRelation extends NamedObject
      * Creates a domain relation whose name is name
      * @param name The name of the domain relation to create
      * @return The domain relation created
+     * @exception BasicException Throws when the name is empty or blank
      */
     public static DomainRelation create(String name)
     {
@@ -47,6 +54,8 @@ public class DomainRelation extends NamedObject
     /**
      * Sets the source domain concept of the relation
      * @param srcDcName The name of the source domain concept
+     * @exception BasicException Throws when the source domain concept
+     *        is not existent
      */
     public void setSrc(String srcDcName)
     {
@@ -68,6 +77,8 @@ public class DomainRelation extends NamedObject
     /**
      * Sets the destination domain concept of the relation
      * @param dstDcName The name of the destination domain concept
+     * @exception BasicException Throws when the destination domain
+     *        concept is not existent
      */
     public void setDst(String dstDcName)
     {
@@ -79,11 +90,20 @@ public class DomainRelation extends NamedObject
     }
 
     /**
-     * Get the name of the destination domain concept of the relation
+     * Gets the name of the destination domain concept of the relation
      * @return The name of the destination domain concept
      */
     public String getDst()
     {
         return dstDcName;
+    }
+
+    /**
+     * Sets the meta relation of the domain relation
+     * @param mr The meta relation to specify to the domain relation
+     */
+    public void setMetaRelation(MetaRelation mr)
+    {
+        meta = mr;
     }
 }
