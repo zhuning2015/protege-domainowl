@@ -1,28 +1,25 @@
 package org.protege.editor.owl.ning.domainOWL;
 
-import java.util.HashMap;
-import org.protege.editor.owl.ning.exception.AddSameDomainConceptException;
-import org.protege.editor.owl.ning.exception.AddDomainConceptWithSameNameException;
 import org.protege.editor.owl.ning.exception.NullDomainOntologyException;
 
 /**
- * The domain ontology class. It's the root for domain concepts, domain * relations.
+ * The domain ontology class. It's the root for domain concepts, domain relations.
  * @author Zhu Ning
  * @version 0.0.2
  */
 public class DomainOntology extends NamedObject
 {
     /**
-     * A hash map storing domain concepts
+     * A DomainConcept-type OntologyComponent storing domain concepts
      */
-    private HashMap<String, DomainConcept> domainConcepts =
-        new HashMap<String, DomainConcept>();
+    private OntologyContainer<DomainConcept> domainConcepts =
+        new OntologyContainer<DomainConcept>();
 
     /**
-     * A hash map storing domain relations
+     * A DomainRelation-type OntologyComponent storing domain relations
      */
-    private Hashmap<String, DomainRelation> domainRelations =
-        new HashMap<String, DomainRelation>();
+    private OntologyContainer<DomainRelation> domainRelations =
+        new OntologyContainer<DomainRelation>();
 
     /**
      * The single domain ontology at a time spot
@@ -52,7 +49,8 @@ public class DomainOntology extends NamedObject
     public static DomainOntology getDomainOntology()
     {
         if (singleDomainOntology == null)
-            throw new NullDomainOntologyException("The present domain ontology is null");
+            throw new NullDomainOntologyException
+                ("The present domain ontology is null");
         return singleDomainOntology;
     }
 
@@ -62,18 +60,7 @@ public class DomainOntology extends NamedObject
      */
     public void addDomainConcept(DomainConcept dc)
     {
-        DomainConcept oldDc = getDomainConcept(dc.getName());
-        if (oldDc != null)
-        {
-            if (oldDc == dc)
-            {
-                throw new AddSameDomainConceptException("Add a same domain concept");
-            }else
-            {
-                throw new AddDomainConceptWithSameNameException("Add a domain concpet with the same name of some existed domain concept");
-            }
-        }
-        domainConcepts.put(dc.getName(), dc);
+        domainConcepts.addComponent(dc);
     }
 
     /**
@@ -82,8 +69,7 @@ public class DomainOntology extends NamedObject
      */
     public void addDomainRelation(DomainRelation dr)
     {
-        DomainRelation oldDr = getDomainRelation(dr.getName());
-
+        domainRelations.addComponent(dr);
     }
 
     /**
@@ -94,10 +80,7 @@ public class DomainOntology extends NamedObject
      */
     public DomainConcept getDomainConcept(String dcName)
     {
-        if (containsDomainConcept(dcName))
-            return domainConcepts.get(dcName);
-        else
-            return null;
+        return domainConcepts.getComponent(dcName);
     }
 
     /**
@@ -108,10 +91,7 @@ public class DomainOntology extends NamedObject
      */
      public DomainRelation getDomainRelation(String drName)
      {
-         if (containsDomainRelation(drName))
-             return domainRelations.get(drName);
-         else
-             return null;
+         return domainRelations.getComponent(drName);
      }
 
     /**
@@ -123,7 +103,7 @@ public class DomainOntology extends NamedObject
      */
     public boolean containsDomainConcept(String dcName)
     {
-        return domainConcepts.containsKey(dcName);
+        return domainConcepts.containsComponent(dcName);
     }
 
     /**
@@ -135,29 +115,48 @@ public class DomainOntology extends NamedObject
      */
     public boolean containsDomainRelation(String drName)
     {
-        return domainRelations.containsKey(drName);
+        return domainRelations.containsComponent(drName);
     }
 
     /**
      * If a domain concept changed its name, it will be scheduled to
-     * update its record in DomainOntology
+     * update its record in the domain ontology
      * @param dc The domain concept whose name is changed
      * @param oldName The old name of the domain concept
      * @param newName The new name of the domain concept
      */
     public void updateDomainConcept(DomainConcept dc, String oldName, String newName)
     {
-        domainConcepts.remove(oldName);
-        dc.setName(newName);
-        domainConcepts.put(newName, dc);
+        domainConcepts.update(dc, oldName, newName);
+    }
+
+    /**
+     * If a domain relation changed its name, it will be schuled to
+     * update its record in the domain ontology
+     * @param dr The domain relation whose name is changed
+     * @param oldName The old name of the domain relatioin
+     * @param newName The new name of the domain relation
+     */
+    public void updateDomainRelation(DomainRelation dr, String oldName, String newName)
+    {
+        domainRelations.update(dr, oldName, newName);
     }
 
     /**
      * Removes a domain concept from the domain ontology
-     * @param dcName The domain concept to be removed
+     * @param dcName The name of the domain concept to remove
      */
     public void removeDomainConcept(String dcName)
     {
         domainConcepts.remove(dcName);
+    }
+
+    /**
+     * Removes a domain relation from the domain ontology
+     * @param drName The name of the domain relation to remove
+     */
+    public void removeDomainRelation(String drName)
+    {
+        domainRelations.remove(drName);
     }
 }

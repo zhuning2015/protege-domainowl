@@ -3,6 +3,7 @@ package org.protege.editor.owl.ning.test;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.exception.LinkSameRelationMoreThanOnceException;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
+import org.protege.editor.owl.ning.domainOWL.DomainRelation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,14 +25,6 @@ public class TestDomainConcept
         assertFalse(domainOnt.containsDomainConcept("test"));
         DomainConcept.create("test");
         assertTrue(domainOnt.containsDomainConcept("test"));
-    }
-
-    @Test
-    public void TestDelete()
-    {
-        DomainConcept.create("test");
-        DomainConcept.delete("test");
-        assertFalse(domainOnt.containsDomainConcept("test"));
     }
 
     @Test

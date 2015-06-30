@@ -33,7 +33,7 @@ public class DomainConcept extends NamedObject
 
     /**
      * Creates a domain concept whose name is name
-     * @param name The name of the domain concept created to be created
+     * @param name The name of the domain concept created to create
      * @return The domain concept created
      */
     public static DomainConcept create(String name)
@@ -44,16 +44,6 @@ public class DomainConcept extends NamedObject
         dt.addDomainConcept(dc);
 
         return dc;
-    }
-
-    /**
-     * Deletes a domain concept whose name is name
-     * @param name The name of the domain concept to be deleted
-     */
-    public static void delete(String name)
-    {
-        DomainOntology dt = DomainOntology.getDomainOntology();
-        dt.removeDomainConcept(name);
     }
 
     /**
