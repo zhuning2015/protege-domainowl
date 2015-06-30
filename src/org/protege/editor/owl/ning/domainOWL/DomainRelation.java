@@ -1,6 +1,7 @@
 package org.protege.editor.owl.ning.domainOWL;
 
-import org.protege.editor.owl.ning.exception.NullNameException;
+import org.protege.editor.owl.ning.exception.BasicException;
+import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 
 /**
  * The domain relation class representing the customized relation from
@@ -33,10 +34,7 @@ public class DomainRelation extends NamedObject
      */
     public static DomainRelation create(String name)
     {
-        if (name.isEmpty())
-            throw new NullNameException("The name of the specified domain relation is null");
-        if (name.trim().isEmpty())
-            throw new NullNameException("The chars consisting the name of the specified domain relation are all spaces");
+        checkName(name, "The name of the specified domain relation is null", "The chars consisting the name of the specified domain relation are all spaces");
 
         DomainRelation dr = new DomainRelation(name);
 
@@ -52,10 +50,9 @@ public class DomainRelation extends NamedObject
      */
     public void setSrc(String srcDcName)
     {
-        if (srcDcName.isEmpty())
-            throw new NullNameException("The name of the specified source domain concept is empty");
-        if (srcDcName.trim().isEmpty())
-            throw new NullNameException("The chars consisting the name of the specified source domain concept are all spaces");
+        DomainOntology dt = DomainOntology.getDomainOntology();
+        if (!dt.containsDomainConcept(srcDcName))
+            throw new BasicException("Source domain concept" + srcDcName+" is not existent");
         this.srcDcName = srcDcName;
     }
 
@@ -74,10 +71,10 @@ public class DomainRelation extends NamedObject
      */
     public void setDst(String dstDcName)
     {
-        if (dstDcName.isEmpty())
-            throw new NullNameException("The name of the specified source domain concept is empty");
-        if (dstDcName.trim().isEmpty())
-            throw new NullNameException("The chars consisting the name of the specified source domain concept are all spaces");
+        DomainOntology dt = DomainOntology.getDomainOntology();
+        if (!dt.containsDomainConcept(dstDcName))
+            throw new BasicException("The destination domain concept "
+                                     + dstDcName+" is not existent");
         this.dstDcName = dstDcName;
     }
 

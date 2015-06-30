@@ -1,8 +1,8 @@
 package org.protege.editor.owl.ning.domainOWL;
 
 import org.protege.editor.owl.ning.domainOWL.NamedObject;
-import org.protege.editor.owl.ning.exception.AddSameOneException;
-import org.protege.editor.owl.ning.exception.AddOnesWithSameNameException;
+import org.protege.editor.owl.ning.exception.BasicException;
+import org.protege.editor.owl.ning.exception.BasicException;
 
 import java.util.HashMap;
 
@@ -32,10 +32,11 @@ public class OntologyContainer<T extends NamedObject>
         {
             if (oldComponent == component)
             {
-                throw new AddSameOneException("Add a same ontology element");
+                throw new BasicException("Add a same ontology element");
             }else
             {
-                throw new AddOnesWithSameNameException("Add an ontology element with the same name of some already existed element");
+                throw new BasicException
+                    ("Add an ontology element with the same name of some already existed element");
             }
         }
         ontologyComponents.put(component.getName(), component);
@@ -70,12 +71,11 @@ public class OntologyContainer<T extends NamedObject>
     /**
      * Updates the component in the container from oldName to newName
      * @param component The component to update
-     * @param oldName The old name of the component
      * @param newName The new name of the component
      */
-    public void update(T component, String oldName, String newName)
+    public void update(T component, String newName)
     {
-        ontologyComponents.remove(oldName);
+        ontologyComponents.remove(component.getName());
         component.setName(newName);
         ontologyComponents.put(newName, component);
     }

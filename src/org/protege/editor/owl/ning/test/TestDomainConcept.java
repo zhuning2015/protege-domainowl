@@ -1,7 +1,7 @@
 package org.protege.editor.owl.ning.test;
 
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
-import org.protege.editor.owl.ning.exception.LinkSameRelationMoreThanOnceException;
+import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.domainOWL.DomainRelation;
 
@@ -36,7 +36,7 @@ public class TestDomainConcept
         assertTrue(dc.containsOutgoingRelation("testRelation"));
     }
 
-    @Test(expected=LinkSameRelationMoreThanOnceException.class)
+    @Test(expected=BasicException.class)
     public void TestAddOutgoingRelation_Exception()
     {
         DomainConcept dc = DomainConcept.create("test");
@@ -65,7 +65,7 @@ public class TestDomainConcept
         assertTrue(dc.containsIncomingRelation("testRelation"));
     }
 
-    @Test(expected=LinkSameRelationMoreThanOnceException.class)
+    @Test(expected=BasicException.class)
     public void TestAddIncomingRelaion_Exception()
     {
         DomainConcept dc = DomainConcept.create("test");

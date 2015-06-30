@@ -1,6 +1,8 @@
 package org.protege.editor.owl.ning.test;
 
 import org.protege.editor.owl.ning.domainOWL.NamedObject;
+import org.protege.editor.owl.ning.exception.BasicException;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,7 +29,7 @@ public class TestNamedObject
     {
         String name = "test";
         namedObject.setName(name);
-        assertEquals("Error:Set English names",name, namedObject.getName());
+        assertEquals(name, namedObject.getName());
     }
 
     @Test
@@ -35,28 +37,20 @@ public class TestNamedObject
     {
         String name = "测试名称";
         namedObject.setName(name);
-        assertEquals("Error:Set Chinese names", name, namedObject.getName());
+        assertEquals(name, namedObject.getName());
     }
 
-    @Test
+    @Test(expected=BasicException.class)
     public void TestGetSetNameWhichIsNull()
     {
-        String preName = "测试名称";
-        namedObject.setName(preName);
-
         String name = "";
         namedObject.setName(name);
-        assertEquals("error:Set names which are null",preName,namedObject.getName());
     }
 
-    @Test
+    @Test(expected=BasicException.class)
     public void TestGetSetNameWhichConsistsOfSpaces()
     {
-        String preName = "测试名称";
-        namedObject.setName(preName);
-
         String name = "  ";
         namedObject.setName(name);
-        assertEquals("error:Set names which consists of spaces",namedObject.getName(), "测试名称");
     }
 }

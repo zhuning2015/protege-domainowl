@@ -1,6 +1,6 @@
 package org.protege.editor.owl.ning.domainOWL;
 
-import org.protege.editor.owl.ning.exception.NullDomainOntologyException;
+import org.protege.editor.owl.ning.exception.BasicException;
 
 /**
  * The domain ontology class. It's the root for domain concepts, domain relations.
@@ -38,6 +38,9 @@ public class DomainOntology extends NamedObject
      */
     public static DomainOntology create(String name)
     {
+        checkName(name,
+                  "The name for the domain ontology is empty",
+                  "The name for the domain ontology is blank");
         singleDomainOntology = new DomainOntology(name);
         return singleDomainOntology;
     }
@@ -49,7 +52,7 @@ public class DomainOntology extends NamedObject
     public static DomainOntology getDomainOntology()
     {
         if (singleDomainOntology == null)
-            throw new NullDomainOntologyException
+            throw new BasicException
                 ("The present domain ontology is null");
         return singleDomainOntology;
     }
@@ -122,24 +125,22 @@ public class DomainOntology extends NamedObject
      * If a domain concept changed its name, it will be scheduled to
      * update its record in the domain ontology
      * @param dc The domain concept whose name is changed
-     * @param oldName The old name of the domain concept
      * @param newName The new name of the domain concept
      */
-    public void updateDomainConcept(DomainConcept dc, String oldName, String newName)
+    public void updateDomainConcept(DomainConcept dc, String newName)
     {
-        domainConcepts.update(dc, oldName, newName);
+        domainConcepts.update(dc, newName);
     }
 
     /**
      * If a domain relation changed its name, it will be schuled to
      * update its record in the domain ontology
      * @param dr The domain relation whose name is changed
-     * @param oldName The old name of the domain relatioin
      * @param newName The new name of the domain relation
      */
-    public void updateDomainRelation(DomainRelation dr, String oldName, String newName)
+    public void updateDomainRelation(DomainRelation dr, String newName)
     {
-        domainRelations.update(dr, oldName, newName);
+        domainRelations.update(dr, newName);
     }
 
     /**

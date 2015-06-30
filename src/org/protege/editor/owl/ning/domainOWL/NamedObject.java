@@ -1,5 +1,7 @@
 package org.protege.editor.owl.ning.domainOWL;
 
+import org.protege.editor.owl.ning.exception.BasicException;
+
 /**
  * The base class of classes with the field "name"
  *
@@ -24,13 +26,7 @@ public abstract class NamedObject
      */
     public void setName(String name)
     {
-        if (name.isEmpty())
-            return;
-
-        String trimmedName = name.trim();
-        if (trimmedName.isEmpty())
-            return;
-
+        checkName(name, "The specifid name is empty", "The specified name is blank");
         this.name = name;
     }
 
@@ -41,5 +37,14 @@ public abstract class NamedObject
     public String getName()
     {
         return name;
+    }
+
+    public static void checkName(String name, String excptMsgIfEmpty, String excptMsgIfBlank)
+    {
+        if (name.isEmpty())
+            throw new BasicException(excptMsgIfEmpty);
+
+        if (name.trim().isEmpty())
+            throw new BasicException(excptMsgIfBlank);
     }
 }

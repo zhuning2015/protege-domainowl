@@ -1,6 +1,6 @@
 package org.protege.editor.owl.ning.domainOWL;
 
-import org.protege.editor.owl.ning.exception.LinkSameRelationMoreThanOnceException;
+import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 
 import java.util.ArrayList;
@@ -38,6 +38,7 @@ public class DomainConcept extends NamedObject
      */
     public static DomainConcept create(String name)
     {
+        checkName(name, "The specified name for the domain concept is empty", "The specified name for the domain concept consists of all spaces");
         DomainConcept dc = new DomainConcept(name);
 
         DomainOntology dt = DomainOntology.getDomainOntology();
@@ -53,7 +54,7 @@ public class DomainConcept extends NamedObject
     public void addOutgoingRelation(String relationName)
     {
         if (outgoingRelations.contains(relationName))
-            throw new LinkSameRelationMoreThanOnceException("a domain concept linked the same outgoing relation more than once");
+            throw new BasicException("a domain concept linked the same outgoing relation more than once");
 
         outgoingRelations.add(relationName);
     }
@@ -85,7 +86,7 @@ public class DomainConcept extends NamedObject
     public void addIncomingRelation(String relationName)
     {
         if (incomingRelations.contains(relationName))
-            throw new LinkSameRelationMoreThanOnceException("a domain concept linked the same incoming relation more than once");
+            throw new BasicException("a domain concept linked the same incoming relation more than once");
 
         incomingRelations.add(relationName);
     }

@@ -2,7 +2,8 @@ package org.protege.editor.owl.ning.test;
 
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.DomainRelation;
-import org.protege.editor.owl.ning.exception.NullNameException;
+import org.protege.editor.owl.ning.domainOWL.DomainConcept;
+import org.protege.editor.owl.ning.exception.BasicException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,60 +27,36 @@ public class TestDomainRelation
         assertTrue(dt.containsDomainRelation("TestRelation"));
     }
 
-    @Test(expected=NullNameException.class)
-    public void TestCreate_NullName()
-    {
-        DomainRelation.create("");
-    }
-
-    @Test(expected=NullNameException.class)
-    public void TestCreate_BlankName()
-    {
-        DomainRelation.create("   ");
-    }
-
     @Test
     public void TestSetSrc()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
+        DomainConcept dc = DomainConcept.create("dc");
         dr.setSrc("dc");
         assertEquals("dc", dr.getSrc());
     }
 
-    @Test(expected=NullNameException.class)
-    public void TestSetSrc_EmptyName()
-    {
-        DomainRelation dr = DomainRelation.create("TestRelatioin");
-        dr.setSrc("");
-    }
-
-    @Test(expected=NullNameException.class)
-    public void TestSrc_BlankName()
+    @Test(expected=BasicException.class)
+    public void TestSetSrc_NonExistent()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
-        dr.setSrc("     ");
+        dr.setSrc("dc");
     }
+
 
     @Test
     public void TestSetDst()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
+        DomainConcept dc = DomainConcept.create("dc");
         dr.setDst("dc");
         assertEquals("dc", dr.getDst());
     }
 
-    @Test(expected=NullNameException.class)
-    public void TestSetDst_EmptyName()
+    @Test(expected=BasicException.class)
+    public void TestSetDst_NonExistent()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
-        dr.setDst("");
+        dr.setDst("dc");
     }
-
-    @Test(expected=NullNameException.class)
-    public void TestSetDst_BlankName()
-    {
-        DomainRelation dr = DomainRelation.create("TestRelation");
-        dr.setDst("      ");
-    }
-
 }

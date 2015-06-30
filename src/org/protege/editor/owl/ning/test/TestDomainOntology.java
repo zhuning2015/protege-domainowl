@@ -2,8 +2,7 @@ package org.protege.editor.owl.ning.test;
 
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
-import org.protege.editor.owl.ning.exception.AddSameOneException;
-import org.protege.editor.owl.ning.exception.AddOnesWithSameNameException;
+import org.protege.editor.owl.ning.exception.BasicException;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -34,14 +33,14 @@ public class TestDomainOntology
         assertTrue(domainOnt.containsDomainConcept("test"));
     }
 
-    @Test(expected=AddSameOneException.class)
+    @Test(expected=BasicException.class)
     public void TestAddDomainConcept_Same()
     {
         DomainConcept dc = DomainConcept.create("test");
         domainOnt.addDomainConcept(dc);
     }
 
-    @Test(expected=AddOnesWithSameNameException.class)
+    @Test(expected=BasicException.class)
     public void TestAddDomainConcept_SameName()
     {
         DomainConcept.create("test");
@@ -62,7 +61,7 @@ public class TestDomainOntology
     {
         DomainConcept dc = DomainConcept.create("test");
 
-        domainOnt.updateDomainConcept(dc,"test","test1");
+        domainOnt.updateDomainConcept(dc,"test1");
 
         assertTrue(domainOnt.containsDomainConcept("test1"));
         assertFalse(domainOnt.containsDomainConcept("test"));
