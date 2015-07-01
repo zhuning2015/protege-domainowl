@@ -9,9 +9,9 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 
 /**
- * The Test class for DomainOntology
+ * The test class for DomainOntology
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class TestDomainOntology
 {

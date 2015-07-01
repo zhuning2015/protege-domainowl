@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * from the meta ontology concept
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class DomainConcept extends NamedObject
 {

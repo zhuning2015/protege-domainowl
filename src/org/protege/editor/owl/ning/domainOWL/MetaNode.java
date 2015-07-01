@@ -1,6 +1,7 @@
 package org.protege.editor.owl.ning.domainOWL;
 
 import org.protege.editor.owl.ning.exception.BasicException;
+import org.protege.editor.owl.ning.domainOWL.Restriction;
 
 import java.util.ArrayList;
 
@@ -9,23 +10,15 @@ import java.util.ArrayList;
  * ontology
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public abstract class MetaNode extends NamedObject
 {
     /**
-     * A list which consists of all the outgoing meta relation names
-     * of the meta node.
+     * A list which consists of all the restrictions of the meta node.
      */
-    private ArrayList<String> outgoingMrNames =
-        new ArrayList<String>();
-
-    /**
-     *  A list which consists of all the incoming meta relation
-     *  names of the meta node.
-     */
-    private ArrayList<String> incomingMrNames =
-        new ArrayList<String>();
+    private ArrayList<Restriction> restrictions =
+        new ArrayList<Restriction>();
 
     public MetaNode(String name)
     {
@@ -33,62 +26,28 @@ public abstract class MetaNode extends NamedObject
     }
 
     /**
-     * Adds an outgoing meta relation to the meta node
-     * @param metaRelationName The name of the outgoing meta relation
-     * @exception BasicException Throws the outgoing meta relation
+     * Adds a restriction to the meta node
+     * @param restrc The restriction to add
+     * @exception BasicException Throws when the restriction
      * already exists
      */
-    public void addOutgoingMetaRelation(String metaRelationName)
+    public void addRestriction(Restriction restrc)
     {
-        if (outgoingMrNames.contains(metaRelationName))
+        if (restrictions.contains(restrc))
             throw new BasicException
-                ("The outgoing meta relation called "
-                        + metaRelationName + " already exists");
+                ("The restriction  already exists");
 
-        outgoingMrNames.add(metaRelationName);
+        restrictions.add(restrc);
     }
 
     /**
-     * Adds an incoming meta relation to the meta node
-     * @param metaRelationName The name of the incoming meta relation
-     * @exception BasicException Throws when the incoming meta relation
-     * already exists
+     * Checks if the meta node contains the restriction restrc
+     * @param restrc The restriction to check
+     * @return True if the meta node contains such a restriction,
+     * false otherwise.
      */
-    public void addIncomingMetaRelation(String metaRelationName)
+    public boolean containsRestriction(Restriction restrc)
     {
-        if (incomingMrNames.contains(metaRelationName))
-            throw new BasicException
-                ("The incoming meta relation called "
-                 + metaRelationName + " already exists");
-
-        incomingMrNames.add(metaRelationName);
-    }
-
-    /**
-     * Checks if the meta node contains an outgoing meta relation
-     * called metaRelationName
-     * @param metaRelationName The name of the outgoing meta relation
-     *        to check
-     * @return True if the meta node contains such an outgoing meta
-     *         relation, false otherwise.
-     */
-    public boolean containsOutgoingMetaRelation
-        (String metaRelationName)
-    {
-        return outgoingMrNames.contains(metaRelationName);
-    }
-
-    /**
-     * Checks if the meta node contains an incoming meta relation
-     * called metaRelationName
-     * @param metaRelationName The name of the incoming meta relation
-     *        to check
-     * @return True if the meta node contains such an incoming meta
-     *         relation, false otherwise.
-     */
-    public boolean containsIncomingMetaRelation
-        (String metaRelationName)
-    {
-        return incomingMrNames.contains(metaRelationName);
+        return restrictions.contains(restrc);
     }
 }

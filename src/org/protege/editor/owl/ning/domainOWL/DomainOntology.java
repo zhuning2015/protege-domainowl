@@ -5,7 +5,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
 /**
  * The domain ontology class. It's the root for domain concepts, domain relations.
  * @author Zhu Ning
- * @version 0.0.2
+ * @version 0.1.0
  */
 public class DomainOntology extends NamedObject
 {
@@ -24,7 +24,7 @@ public class DomainOntology extends NamedObject
     /**
      * The single domain ontology at a time spot
      */
-    static DomainOntology singleDomainOntology = null;
+    private static DomainOntology singleDomainOntology = null;
 
     private DomainOntology(String name)
     {
@@ -33,25 +33,22 @@ public class DomainOntology extends NamedObject
 
     /**
      * Creates a domain ontology with the name
-     * @param name the name of the domainontology to be created
-     * @return the domain ontology created
+     * @param name The name of the domainontology to create
+     * @return The domain ontology created
      * @exception BasicException Throws when the name is empty or
      *         blank
      */
     public static DomainOntology create(String name)
     {
-        checkName(name,
-                  "The name for the domain ontology is empty",
-                  "The name for the domain ontology is blank");
         singleDomainOntology = new DomainOntology(name);
         return singleDomainOntology;
     }
 
     /**
-     * Gets the domain ontology present
-     * @return the present domain ontology
+     * Gets the present domain ontology
+     * @return The present domain ontology
      * @exception BasicException Throws when the present domain
-     *         ontology is null
+     * ontology is null
      */
     public static DomainOntology getDomainOntology()
     {

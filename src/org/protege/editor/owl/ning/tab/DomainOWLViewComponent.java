@@ -16,20 +16,20 @@ public class DomainOWLViewComponent extends AbstractOWLViewComponent {
     
     private static final Logger log = Logger.getLogger(DomainOWLViewComponent.class);
     
-    private JPanel metricsComponent;
+    private DomainOWLPanel domainOWLPanel = null;
 
     @Override
     protected void initialiseOWLView() throws Exception {
         setLayout(new BorderLayout());
-        //        metricsComponent = new DomainOWLPanel(getOWLModelManager());
+        domainOWLPanel = new DomainOWLPanel(getOWLModelManager());
         
-        add(metricsComponent, BorderLayout.CENTER);
+        add(domainOWLPanel, BorderLayout.CENTER);
         log.info("Example View Component initialized");
     }
 
     @Override
     protected void disposeOWLView() {
-        //        metricsComponent.dispose();
+        domainOWLPanel.dispose();
     }
     
 }

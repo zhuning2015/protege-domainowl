@@ -6,7 +6,7 @@ import org.protege.editor.owl.ning.domainOWL.NamedObject;
  * MetaOntologyElement, the basic class for all the components in the
  * meta ontology
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public abstract class MetaOntologyElement extends NamedObject
 {

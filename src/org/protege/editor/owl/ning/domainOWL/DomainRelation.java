@@ -9,7 +9,7 @@ import org.protege.editor.owl.ning.domainOWL.MetaRelation;
  * the meta ontology relation
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class DomainRelation extends NamedObject
 {

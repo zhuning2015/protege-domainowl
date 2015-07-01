@@ -10,7 +10,7 @@ import java.util.HashMap;
  * The template class representing containers of domain concepts,
  * domain relations and so on.
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class OntologyContainer<T extends NamedObject>
 {
@@ -23,7 +23,7 @@ public class OntologyContainer<T extends NamedObject>
     /**
      * Adds a component
      * @param component The component to add
-     * @exception BasicException Throw when duplicate name or same
+     * @exception BasicException Throws when duplicate name or same
      *        component to add
      */
     public void addComponent(T component)

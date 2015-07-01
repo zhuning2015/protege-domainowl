@@ -7,7 +7,7 @@ import org.protege.editor.owl.ning.domainOWL.MetaNode;
  * meta ontology
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public class Instance extends MetaNode
 {

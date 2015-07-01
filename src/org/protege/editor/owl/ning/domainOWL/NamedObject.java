@@ -6,7 +6,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
  * The base class of classes with the field "name"
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
 public abstract class NamedObject
 {

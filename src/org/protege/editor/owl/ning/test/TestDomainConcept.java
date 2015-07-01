@@ -9,6 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * The test class for DomainConcept
+ *
+ * @author Zhu Ning
+ * @version 0.1.0
+ */
 public class TestDomainConcept
 {
     DomainOntology domainOnt = null;

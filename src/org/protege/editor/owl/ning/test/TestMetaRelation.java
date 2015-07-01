@@ -8,6 +8,12 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * The test class for MetaRelation
+ *
+ * @author Zhu Ning
+ * @version 0.1.0
+ */
 public class TestMetaRelation
 {
     MetaRelation mr = null;

@@ -8,12 +8,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Test class for NamedObject
+ * The test class for NamedObject
  *
  * @author Zhu Ning
- * @version 0.0.1
+ * @version 0.1.0
  */
-
 public class TestNamedObject
 {
     NamedObject namedObject = null;
