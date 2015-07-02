@@ -20,6 +20,13 @@ public abstract class MetaNode extends NamedObject
     private ArrayList<Restriction> restrictions =
         new ArrayList<Restriction>();
 
+    /**
+     * A list which consists of all the outgoing relations from the
+     * meta node
+     */
+    private ArrayList<String> outgoingMetaRelations =
+        new ArrayList<String>();
+
     public MetaNode(String name)
     {
         super(name);
@@ -36,8 +43,34 @@ public abstract class MetaNode extends NamedObject
         if (restrictions.contains(restrc))
             throw new BasicException
                 ("The restriction  already exists");
-
         restrictions.add(restrc);
+    }
+
+    /**
+     * Adds an outgoing meta relation to the meta node
+     * @param outgoingMrRltName The name of the outgoing meta relation
+     * to add
+     * @exception BasicException Throws when the outgoing meta relation
+     * already exists
+     */
+    public void addOutgoingMetaRelation(String outgoingMrRltName)
+    {
+        if (outgoingMetaRelations.contains(outgoingMrRltName))
+            throw new BasicException("duplicate outgoing relation name");
+        outgoingMetaRelations.add(outgoingMrRltName);
+    }
+
+    /**
+     * Checks if the meta node contains the meta relation called
+     * outgoingRltName
+     * @param outgoingMrRltName The name of the outgoing meta relation to
+     * check
+     * @return True if the meta node contains such an outgoing meta
+     * relation, false otherwise
+     */
+    public boolean containsOutgoingMetaRelation(String outgoingMrRltName)
+    {
+        return outgoingMetaRelations.contains(outgoingMrRltName);
     }
 
     /**
