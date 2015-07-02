@@ -85,6 +85,16 @@ public class MetaOntology extends NamedObject
     }
 
     /**
+     * Get the meta concept called mcName in the meta ontology
+     * @param mcName The name of the meta concept to get
+     * @return The meta concept to get
+     */
+    public MetaConcept getMetaConcept(String mcName)
+    {
+        return metaCncpts.getComponent(mcName);
+    }
+
+    /**
      * Creates a meta relation named by mrName
      * @param mrName The name of the meta relation to create
      * @return The meta relation created
