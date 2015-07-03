@@ -3,17 +3,20 @@ package org.protege.editor.owl.ning.tab;
 import org.protege.editor.owl.model.OWLModelManager;
 
 import org.protege.editor.owl.ning.domainOWL.MetaOntology;
+import org.protege.editor.owl.ning.domainOWL.MetaNode;
+import org.protege.editor.owl.ning.domainOWL.MetaRelation;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
+import org.protege.editor.owl.ning.domainOWL.Instance;
+import org.protege.editor.owl.ning.domainOWL.DomainOWLObjectVisitor;
+import org.protege.editor.owl.ning.util.NameParser;
 
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.util.OWLClassExpressionVisitorAdapter;
-import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLIndividual;
 
 import javax.swing.JPanel;
-import javax.swing.JOptionPane;
-import javax.swing.JLabel;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -24,68 +27,110 @@ import javax.swing.JLabel;
 public class DomainOWLPanel extends JPanel
 {
     /**
-     * The inner class for visiting the owl class
+     * The single meta ontology in the domain owl plugin
      */
-    private class DomainOWLClassExpressionVisitor
-        extends OWLClassExpressionVisitorAdapter
-    {
-        public void visit(OWLDataAllValuesFrom ce)
-        {
-            
-        };
-
-    }
     MetaOntology metaOnt = null;
+
+    /**
+     * The active ontology in Protege
+     */
+    OWLOntology owlOnt = null;
+
     public DomainOWLPanel(OWLModelManager owlMdlMgr)
     {
-        OWLOntology owlOnt = owlMdlMgr.getActiveOntology();
-        metaOnt = MetaOntology.create(getOWLOntologyName(owlOnt));
+        owlOnt = owlMdlMgr.getActiveOntology();
+        metaOnt = MetaOntology.create
+            (NameParser.getOWLOntologyName(owlOnt));
+        fillMetaOntologyFromOWLOntology();
+    }
 
+    /**
+     * Fills the meta ontology in the domain owl from the active
+     * owl ontology
+     */
+    private void fillMetaOntologyFromOWLOntology()
+    {
+        createMetaConceptsFromOWLClasses();
+        createMetaRelationsFromOWLObjectProperties();
+        createMetaRelationsFromOWLDataProperties();
+        createRelationsFromOWLDataProperties();        
+    }
+
+    /**
+     * Creates the meta concepts in the meta ontology according to
+     * the owl classes in the active ontology
+     */
+    private void createMetaConceptsFromOWLClasses()
+    {
         for(OWLClass owlCls : owlOnt.getClassesInSignature())
         {
             if (owlCls.isOWLThing())
+            {
                 continue;
-            MetaConcept mc =
-                metaOnt.createMetaConcept(getOWLClassName(owlCls));
-            parse(mc, owlCls);
+            }
+            String mcName = NameParser.getSimpleName(owlCls);
+            MetaConcept mc = metaOnt.createMetaConcept(mcName);
+            owlCls.accept(new DomainOWLObjectVisitor(mc));
         }
     }
 
-    public void parse(MetaConcept mc, OWLClass owlCls)
+
+    /**
+     * Creates the meta relations in the meta ontology according to
+     * the owl object properties in the active ontology
+     */
+    private void createMetaRelationsFromOWLObjectProperties()
     {
+        for(OWLObjectProperty owlObjPrpty :
+                owlOnt.getObjectPropertiesInSignature())
+        {
+            if (owlObjPrpty.isOWLTopObjectProperty())
+            {
+                continue;
+            }
+            String mrName = NameParser.getSimpleName(owlObjPrpty);
+            MetaRelation mr = metaOnt.createMetaRelation(mrName);
+            mr.setMetaRelationType
+                (MetaRelation.MetaRelationType.OBJECT_RELATION);
+            owlObjPrpty.accept(new DomainOWLObjectVisitor(mr));
+        }
 
     }
 
     /**
-     * Gets the simple name of the owl ontology
-     * @param owlOnt The target owl ontology
-     * @return The simple name of the owl ontology. The original format is
-     * OntologyID(OntologyIRI(<http://www.*./name.owl>)), the return value
-     * is name
+     * Creates the meta relations in the meta ontology according to
+     * the owl data properties in the active ontology
      */
-    private String getOWLOntologyName(OWLOntology owlOnt)
+    private void createMetaRelationsFromOWLDataProperties()
     {
-        String strOntologyIRI = owlOnt.getOntologyID().
-            getOntologyIRI().toString();
-        int left = strOntologyIRI.lastIndexOf("/") + 1;
-        int right = strOntologyIRI.lastIndexOf(".");
-        return strOntologyIRI.substring(left, right);
+        for(OWLDataProperty owlDataPrpty :
+                owlOnt.getDataPropertiesInSignature())
+        {
+            if (owlDataPrpty.isOWLTopDataProperty())
+            {
+                continue;
+            }
+            String mrName = NameParser.getSimpleName(owlDataPrpty);
+            MetaRelation mr = metaOnt.createMetaRelation(mrName);
+            owlDataPrpty.accept(new DomainOWLObjectVisitor(mr));
+        }
+
     }
 
     /**
-     * Gets the simple name of the OWL class
-     * @param owlCls The target owl class
-     * @return The simple name of the OWL class. The original format is
-     * http://.....#name, the return value is name
+     * Creates the instances in the meta ontology according to
+     * the owl individuals in the active ontology
      */
-    private String getOWLClassName(OWLClass owlCls)
+    private void createRelationsFromOWLDataProperties()
     {
-        String strIRI = owlCls.getIRI().toString();
-        int left = strIRI.indexOf("#") + 1;
-        int right = strIRI.length();
-        return strIRI.substring(left, right);
+        for(OWLIndividual owlIndv : owlOnt.getIndividualsInSignature())
+        {
+            String instName = NameParser.getSimpleName(owlIndv);
+            Instance inst = metaOnt.createInstance(instName);
+            owlIndv.accept(new DomainOWLObjectVisitor(inst));
+        }
     }
-
+    
     /**
      * Releases the resources applied if there are some
      */
