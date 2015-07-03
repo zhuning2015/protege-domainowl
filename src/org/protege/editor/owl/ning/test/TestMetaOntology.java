@@ -1,6 +1,7 @@
 package org.protege.editor.owl.ning.test;
 
 import org.protege.editor.owl.ning.domainOWL.MetaOntology;
+import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +35,13 @@ public class TestMetaOntology
         assertFalse(metaOnt.containsMetaConcept("TestMc"));
         metaOnt.createMetaConcept("TestMc");
         assertTrue(metaOnt.containsMetaConcept("TestMc"));
+    }
+
+    @Test
+    public void testGetMetaConcept()
+    {
+        MetaConcept mc = metaOnt.createMetaConcept("TestMc");
+        assertEquals(mc, metaOnt.getMetaConcept("TestMc"));
     }
 
     @Test
