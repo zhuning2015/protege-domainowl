@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author Zhu Ning
  * @version 0.1.0
  */
-public abstract class MetaNode extends NamedObject
+public abstract class MetaNode extends MetaOntologyElement
 {
     /**
      * A list which consists of all the restrictions of the meta node.
