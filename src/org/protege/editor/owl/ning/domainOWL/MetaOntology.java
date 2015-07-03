@@ -85,6 +85,15 @@ public class MetaOntology extends NamedObject
     }
 
     /**
+     * Gets the count of the meta concepts in the meta ontology
+     * @return The count of the meta concepts in the meta ontology
+     */
+    public int getMetaConceptCount()
+    {
+        return metaCncpts.size();
+    }
+
+    /**
      * Get the meta concept called mcName in the meta ontology
      * @param mcName The name of the meta concept to get
      * @return The meta concept to get
@@ -140,5 +149,44 @@ public class MetaOntology extends NamedObject
     public boolean containsInstance(String instName)
     {
         return instances.containsComponent(instName);
+    }
+
+    /**
+     * Gets the index-th meta concept in the meta ontology
+     * @param The index of the meta concept to get
+     * @return The index-th meta concept
+     */
+    public MetaConcept getMetaConcept(int index)
+    {
+        return metaCncpts.getComponent(index);
+    }
+
+    public int getMetaRelationCount()
+    {
+        return metaRelations.size();
+    }
+
+    public MetaRelation getMetaRelation(int index)
+    {
+        return metaRelations.getComponent(index);
+    }
+
+    public int getInstanceCount()
+    {
+        return instances.size();
+    }
+
+    public Instance getInstance(int index)
+    {
+        return instances.getComponent(index);
+    }
+
+    public Object[] getKeyParameter()
+    {
+        return new Object[]{"Name", "IsIncluded", "Icon"};
+    }
+    public Object[][] getKeyParameterValues()
+    {
+        return new Object[][]{new Object[]{"Test1", false, "no"}};
     }
 }
