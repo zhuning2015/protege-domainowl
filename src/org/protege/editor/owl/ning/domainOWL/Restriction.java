@@ -16,10 +16,10 @@ public class Restriction
     private String restrcFillerName;
     private int cardinality;
 
-    public Restriction(RestrictionType restrcType, String restrcPrptyName,
+    public Restriction(String restrcPrptyName,
                        String restrcFillerName)
     {
-        setRestrictionType(restrcType);
+        setRestrictionType(RestrictionType.ONLY_DATA);
         setRestrictedPropertyName(restrcPrptyName);
         setRestrictionFillerName(restrcFillerName);
     }
@@ -27,7 +27,8 @@ public class Restriction
     public Restriction(RestrictionType restrcType, String restrcPrptyName,
                        String restrcFillerName, int cardinality)
     {
-        this(restrcType, restrcPrptyName, restrcFillerName);
+        this( restrcPrptyName, restrcFillerName);
+        setRestrictionType(restrcType);
         setCardinality(cardinality);
     }
 
