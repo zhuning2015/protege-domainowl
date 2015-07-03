@@ -153,7 +153,7 @@ public class MetaOntology extends NamedObject
 
     /**
      * Gets the index-th meta concept in the meta ontology
-     * @param The index of the meta concept to get
+     * @param index The index of the meta concept to get
      * @return The index-th meta concept
      */
     public MetaConcept getMetaConcept(int index)
