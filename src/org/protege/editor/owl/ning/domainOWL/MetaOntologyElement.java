@@ -35,11 +35,30 @@ public abstract class MetaOntologyElement extends NamedObject
     }
 
     /**
-     * Set the image path for the meta ontology element
+     * Gets the status whether the meta ontology element is included
+     * @return True if the meta ontology element is included, false
+     * otherwise
+     */
+    public boolean getIsIncluded()
+    {
+        return isIncluded;
+    }
+
+    /**
+     * Sets the image path for the meta ontology element
      * @param imagePath The path for the image
      */
     public void setImagePath(String imagePath)
     {
         this.imagePath = imagePath;
+    }
+
+    /**
+     * Gets the image path for the meta ontology element
+     * @return The physical path for the image
+     */
+    public String getImagePath()
+    {
+        return imagePath;
     }
 }
