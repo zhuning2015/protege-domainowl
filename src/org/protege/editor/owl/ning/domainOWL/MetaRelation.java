@@ -26,9 +26,42 @@ public class MetaRelation extends MetaOntologyElement
      */
     ArrayList<String> dstMnNames = new ArrayList<String>();
 
+    public enum MetaRelationType
+    {
+        OBJECT_RELATION,
+        DATA_RELATION
+    };
+
+    private MetaRelationType metaRelationType;
+
     public MetaRelation(String name)
     {
         super(name);
+        setMetaRelationType(MetaRelationType.OBJECT_RELATION);
+    }
+
+    public MetaRelation(String name, MetaRelationType mrType)
+    {
+        super(name);
+        setMetaRelationType(mrType);
+    }
+
+    /**
+     * Sets the type of the meta relation to mrType
+     * @param mrType The specified type for the meta relation
+     */
+    public void setMetaRelationType(MetaRelationType mrType)
+    {
+        this.metaRelationType = mrType;
+    }
+
+    /**
+     * Gets the type of the meta relation
+     * @return The type of the meta relation
+     */
+    public MetaRelationType getMetaRelationType()
+    {
+        return metaRelationType;
     }
 
     /**
