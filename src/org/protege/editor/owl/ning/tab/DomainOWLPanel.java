@@ -9,6 +9,7 @@ import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 import org.protege.editor.owl.ning.domainOWL.Instance;
 import org.protege.editor.owl.ning.domainOWL.DomainOWLObjectVisitor;
 import org.protege.editor.owl.ning.util.NameParser;
+import org.protege.editor.owl.ning.tab.dialog.DomainOWLPanelConfigureDlg;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -42,6 +43,7 @@ public class DomainOWLPanel extends JPanel
         metaOnt = MetaOntology.create
             (NameParser.getOWLOntologyName(owlOnt));
         fillMetaOntologyFromOWLOntology();
+        new DomainOWLPanelConfigureDlg(metaOnt).setVisible(true);  
     }
 
     /**
