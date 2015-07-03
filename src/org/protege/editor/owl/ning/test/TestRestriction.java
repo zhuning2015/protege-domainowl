@@ -20,16 +20,17 @@ public class TestRestriction
     @Before
     public void init()
     {
-        restrc = new Restriction(RestrictionType.MIN, "TestProperty",
-                                 "TestFiller");
+        restrc = new Restriction("TestProperty", "TestFiller");
     }
 
     @Test
     public void TestGetSetRestrictionType()
     {
-        assertFalse(restrc.getRestrictionType() == RestrictionType.MAX);
-        restrc.setRestrictionType(RestrictionType.MAX);
-        assertTrue(restrc.getRestrictionType() == RestrictionType.MAX);
+        assertFalse(restrc.getRestrictionType() ==
+                    RestrictionType.MAX_OBJECT);
+        restrc.setRestrictionType(RestrictionType.MAX_OBJECT);
+        assertTrue(restrc.getRestrictionType() ==
+                   RestrictionType.MAX_OBJECT);
     }
 
     @Test
