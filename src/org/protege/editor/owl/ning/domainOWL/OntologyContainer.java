@@ -4,7 +4,8 @@ import org.protege.editor.owl.ning.domainOWL.NamedObject;
 import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.exception.BasicException;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 /**
  * The template class representing containers of domain concepts,
@@ -18,7 +19,9 @@ public class OntologyContainer<T extends NamedObject>
      * A hashmap-structured field storing ontology components with
      * their names as keys.
      */
-    private HashMap<String, T> ontologyComponents = new HashMap<String, T>();
+    private LinkedHashMap<String, T> ontologyComponents =
+        new LinkedHashMap<String, T>();
+    private ArrayList<T> indexedCpyOfComponents = new ArrayList<T>();
 
     /**
      * Adds a component
@@ -41,6 +44,7 @@ public class OntologyContainer<T extends NamedObject>
             }
         }
         ontologyComponents.put(component.getName(), component);
+        indexedCpyOfComponents.add(component);
     }
 
     /**
@@ -55,6 +59,11 @@ public class OntologyContainer<T extends NamedObject>
             return ontologyComponents.get(componentName);
         }
         return null;
+    }
+
+    public T getComponent(int index)
+    {
+        return indexedCpyOfComponents.get(index);
     }
 
     /**
@@ -76,7 +85,9 @@ public class OntologyContainer<T extends NamedObject>
      */
     public void update(T component, String newName)
     {
+        indexedCpyOfComponents.remove(component);
         ontologyComponents.remove(component.getName());
+
         component.setName(newName);
         ontologyComponents.put(newName, component);
     }
@@ -88,6 +99,17 @@ public class OntologyContainer<T extends NamedObject>
      */
     public void remove(String componentName)
     {
-        ontologyComponents.remove(componentName);
+        T component = ontologyComponents.remove(componentName);
+        indexedCpyOfComponents.remove(component);
     }
+
+    /**
+     * Gets the size of the components in the container
+     * @return The size of the components in the container
+     */
+    public int size()
+    {
+        return ontologyComponents.size();
+    }
+
 }
