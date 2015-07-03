@@ -21,7 +21,19 @@ public class TestMetaRelation
     @Before
     public void init()
     {
-        mr = new MetaRelation("TestMetaRelation");
+        mr = new MetaRelation("TestMetaRelation",
+                              MetaRelation.MetaRelationType.OBJECT_RELATION
+                              );
+    }
+
+    @Test
+    public void TestGetSetMetaRelationType()
+    {
+        assertFalse(mr.getMetaRelationType() ==
+                    MetaRelation.MetaRelationType.DATA_RELATION);
+        mr.setMetaRelationType(MetaRelation.MetaRelationType.DATA_RELATION);
+        assertTrue(mr.getMetaRelationType() ==
+                   MetaRelation.MetaRelationType.DATA_RELATION);
     }
 
     @Test
