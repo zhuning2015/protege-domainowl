@@ -23,7 +23,7 @@ public class TestMetaNode
     public void init()
     {
         mn = new MetaNode("TestNode"){};
-        restrc = new Restriction(RestrictionType.MIN, "TestProperty",
+        restrc = new Restriction(RestrictionType.MIN_DATA, "TestProperty",
                                  "TestFiller", 2);
     }
 
@@ -40,5 +40,13 @@ public class TestMetaNode
     {
         mn.addRestriction(restrc);
         mn.addRestriction(restrc);
+    }
+
+    @Test
+    public void testAddOutgoingMetaRelation()
+    {
+        assertFalse(mn.containsOutgoingMetaRelation("TestRelation"));
+        mn.addOutgoingMetaRelation("TestRelation");
+        assertTrue(mn.containsOutgoingMetaRelation("TestRelation"));
     }
 }
