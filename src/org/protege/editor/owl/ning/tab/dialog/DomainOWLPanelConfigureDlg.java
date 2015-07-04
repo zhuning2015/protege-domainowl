@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Frame;
 
 /**
  * The dialog to configure the domain owl panel to decide which
@@ -32,8 +33,12 @@ public class DomainOWLPanelConfigureDlg extends JDialog
         INSTANCE_TABLE
     }
 
-    public DomainOWLPanelConfigureDlg()
+    public DomainOWLPanelConfigureDlg(Frame owner,
+                                      String title,
+                                      boolean modal)
     {
+        super(owner, title, modal);
+
         setLayout(new BorderLayout());
 
         JPanel mainPanel = new JPanel();

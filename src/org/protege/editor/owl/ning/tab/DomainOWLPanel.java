@@ -46,7 +46,9 @@ public class DomainOWLPanel extends JPanel
         metaOnt = MetaOntology.create
             (NameParser.getOWLOntologyName(strOntologyIRI));
         fillMetaOntologyFromOWLOntology();
-        new DomainOWLPanelConfigureDlg().setVisible(true);  
+        new DomainOWLPanelConfigureDlg(null,
+                                       "Configure...",
+                                       true).setVisible(true);  
     }
 
     /**
