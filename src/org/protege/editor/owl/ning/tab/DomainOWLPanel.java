@@ -18,6 +18,7 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLIndividual;
 
 import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -40,10 +41,12 @@ public class DomainOWLPanel extends JPanel
     public DomainOWLPanel(OWLModelManager owlMdlMgr)
     {
         owlOnt = owlMdlMgr.getActiveOntology();
+        String strOntologyIRI = owlOnt.getOntologyID().
+            getOntologyIRI().toString();
         metaOnt = MetaOntology.create
-            (NameParser.getOWLOntologyName(owlOnt));
+            (NameParser.getOWLOntologyName(strOntologyIRI));
         fillMetaOntologyFromOWLOntology();
-        new DomainOWLPanelConfigureDlg(metaOnt).setVisible(true);  
+        new DomainOWLPanelConfigureDlg().setVisible(true);  
     }
 
     /**
