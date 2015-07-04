@@ -68,6 +68,16 @@ public class TestMetaOntology
     }
 
     @Test
+    public void testGetMetaConcept_IfCpyOrNot()
+    {
+        metaOnt.createMetaConcept("TestMc");
+        MetaConcept mc = metaOnt.getMetaConcept("TestMc");
+        mc.setImagePath("TestImagePath");
+        MetaConcept mc1 = metaOnt.getMetaConcept("TestMc");
+        assertTrue(mc.getImagePath().equals(mc1.getImagePath()));
+    }
+
+    @Test
     public void testCreateMetaRelation()
     {
         assertFalse(metaOnt.containsMetaRelation("TestMr"));
