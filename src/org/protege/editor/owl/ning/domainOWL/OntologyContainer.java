@@ -85,9 +85,7 @@ public class OntologyContainer<T extends NamedObject>
      */
     public void update(T component, String newName)
     {
-        indexedCpyOfComponents.remove(component);
         ontologyComponents.remove(component.getName());
-
         component.setName(newName);
         ontologyComponents.put(newName, component);
     }
