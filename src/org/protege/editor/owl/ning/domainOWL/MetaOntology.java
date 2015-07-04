@@ -104,6 +104,16 @@ public class MetaOntology extends NamedObject
     }
 
     /**
+     * Gets the index-th meta concept in the meta ontology
+     * @param index The index of the meta concept to get
+     * @return The index-th meta concept
+     */
+    public MetaConcept getMetaConcept(int index)
+    {
+        return metaCncpts.getComponent(index);
+    }
+
+    /**
      * Creates a meta relation named by mrName
      * @param mrName The name of the meta relation to create
      * @return The meta relation created
@@ -124,6 +134,27 @@ public class MetaOntology extends NamedObject
     public boolean containsMetaRelation(String mrName)
     {
         return metaRelations.containsComponent(mrName);
+    }
+
+    /**
+     * Gets the count of the meta relations in the meta ontology
+     * @return The count of the meta relations in the meta ontology
+     */
+    public int getMetaRelationCount()
+    {
+        return metaRelations.size();
+    }
+
+    /**
+     * Gets the meta relation in the meta ontology according to
+     * its index
+     * @param index The index of the meta relation in the meta
+     * ontology
+     * @return The index-th meta relation in the meta ontology
+     */
+    public MetaRelation getMetaRelation(int index)
+    {
+        return metaRelations.getComponent(index);
     }
 
     /**
@@ -152,41 +183,22 @@ public class MetaOntology extends NamedObject
     }
 
     /**
-     * Gets the index-th meta concept in the meta ontology
-     * @param index The index of the meta concept to get
-     * @return The index-th meta concept
+     * Gets the count of the instances in the meta ontology
+     * @return The count of the instances in the meta ontology
      */
-    public MetaConcept getMetaConcept(int index)
-    {
-        return metaCncpts.getComponent(index);
-    }
-
-    public int getMetaRelationCount()
-    {
-        return metaRelations.size();
-    }
-
-    public MetaRelation getMetaRelation(int index)
-    {
-        return metaRelations.getComponent(index);
-    }
-
     public int getInstanceCount()
     {
         return instances.size();
     }
 
+    /**
+     * Gets the instance in the meta ontology according to
+     * its index
+     * @param index The index of the instance in the meta ontology
+     * @return The index-th instance in the meta ontology
+     */
     public Instance getInstance(int index)
     {
         return instances.getComponent(index);
-    }
-
-    public Object[] getKeyParameter()
-    {
-        return new Object[]{"Name", "IsIncluded", "Icon"};
-    }
-    public Object[][] getKeyParameterValues()
-    {
-        return new Object[][]{new Object[]{"Test1", false, "no"}};
     }
 }
