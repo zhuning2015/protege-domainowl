@@ -15,16 +15,20 @@ public class NameParser
      * Gets the simple name of the owl ontology
      * @param owlOnt The target owl ontology
      * @return The simple name of the owl ontology. The original format is
-     * OntologyID(OntologyIRI(<http://www.*./name.owl>)), the return value
+     * OntologyID(OntologyIRI(<http://www.*./name(.owl)>)), the return value
      * is name
      */
-    public static String getOWLOntologyName(OWLOntology owlOnt)
+    public static String getOWLOntologyName(String strOntologyIRI)
     {
-        String strOntologyIRI = owlOnt.getOntologyID().
-            getOntologyIRI().toString();
         int left = strOntologyIRI.lastIndexOf("/") + 1;
-        int right = strOntologyIRI.lastIndexOf(".");
-        return strOntologyIRI.substring(left, right);
+        String fileName =
+            strOntologyIRI.substring(left, strOntologyIRI.length());
+        int right = fileName.lastIndexOf(".");
+
+        if (right != -1)
+            return fileName.substring(0,right);
+        else
+            return fileName;
     }
 
     /**
