@@ -64,7 +64,7 @@
    <property name="junit.jar" location="${maven.repository}/junit/junit/4.11/junit-4.11.jar"/>
    <property name="hamcrest.jar"
              location="${maven.repository}/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
-   <property name="docs" location="./Docs"/>
+   <property name="docs" location="./docs"/>
    
    <path id="application" location="${build}/${plugin}.jar"/>
    
