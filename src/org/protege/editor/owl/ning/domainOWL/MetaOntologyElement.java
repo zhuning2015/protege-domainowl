@@ -16,9 +16,9 @@ public abstract class MetaOntologyElement extends NamedObject
      */
     private boolean isIncluded = false;
     /**
-     * A path to an image for visualize the meta ontology element
+     * The name of the icon for visualizing the meta ontology element
      */
-    private String imagePath = "";
+    private String iconName = "";
 
     public MetaOntologyElement(String name)
     {
@@ -45,20 +45,20 @@ public abstract class MetaOntologyElement extends NamedObject
     }
 
     /**
-     * Sets the image path for the meta ontology element
-     * @param imagePath The path for the image
+     * Sets the name of the icon for the meta ontology element
+     * @param iconName The name of the icon
      */
-    public void setImagePath(String imagePath)
+    public void setIconName(String iconName)
     {
-        this.imagePath = imagePath;
+        this.iconName = iconName;
     }
 
     /**
-     * Gets the image path for the meta ontology element
-     * @return The physical path for the image
+     * Gets the name of the icon for the meta ontology element
+     * @return The icon name for the meta ontology element
      */
-    public String getImagePath()
+    public String getIconName()
     {
-        return imagePath;
+        return iconName;
     }
 }
