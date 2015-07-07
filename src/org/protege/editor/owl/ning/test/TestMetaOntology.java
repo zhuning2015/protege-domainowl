@@ -72,9 +72,9 @@ public class TestMetaOntology
     {
         metaOnt.createMetaConcept("TestMc");
         MetaConcept mc = metaOnt.getMetaConcept("TestMc");
-        mc.setImagePath("TestImagePath");
+        mc.setIconName("TestIconName");
         MetaConcept mc1 = metaOnt.getMetaConcept("TestMc");
-        assertTrue(mc.getImagePath().equals(mc1.getImagePath()));
+        assertTrue(mc.getIconName().equals(mc1.getIconName()));
     }
 
     @Test
@@ -130,4 +130,36 @@ public class TestMetaOntology
         Instance mc2 = metaOnt.createInstance("TestMr2");
         assertEquals(mc2, metaOnt.getInstance(1));
     }
+
+    @Test
+    public void testGetSelectedMetaConceptsCount()
+    {
+        assertTrue(metaOnt.getSelectedMetaConceptsCount() == 0);
+        MetaConcept mc = metaOnt.createMetaConcept("TestMc");
+        mc.setIsIncluded(true);
+        assertTrue(metaOnt.getSelectedMetaConceptsCount() == 1);
+        MetaConcept mc2 = metaOnt.createMetaConcept("TestMc2");
+        mc2.setIsIncluded(true);
+        assertTrue(metaOnt.getSelectedMetaConceptsCount() == 2);
+        mc.setIsIncluded(false);
+        assertTrue(metaOnt.getSelectedMetaConceptsCount() == 1);
+    }
+
+    @Test
+    public void testGetSelectedMetaConcept()
+    {
+        assertTrue(metaOnt.getSelectedMetaConceptsCount() == 0);
+        MetaConcept mc = metaOnt.createMetaConcept("TestMc");
+        mc.setIsIncluded(true);
+        metaOnt.getSelectedMetaConceptsCount();
+        assertEquals(mc, metaOnt.getSelectedMetaConcept(0));
+        MetaConcept mc2 = metaOnt.createMetaConcept("TestMc2");
+        mc2.setIsIncluded(true);
+        metaOnt.getSelectedMetaConceptsCount();
+        assertEquals(mc2, metaOnt.getSelectedMetaConcept(1));
+        mc.setIsIncluded(false);
+        metaOnt.getSelectedMetaConceptsCount();
+        assertEquals(mc2, metaOnt.getSelectedMetaConcept(0));
+    }
+
 }

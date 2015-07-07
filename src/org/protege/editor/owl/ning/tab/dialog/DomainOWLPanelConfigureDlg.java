@@ -1,17 +1,26 @@
 package org.protege.editor.owl.ning.tab.dialog;
 
 import org.protege.editor.owl.ning.domainOWL.MetaOntology;
+import org.protege.editor.owl.ning.tab.DomainOWLPanel;
 
 import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-//import javax.swing.JCheckBox;
+import javax.swing.JCheckBox;
 import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JOptionPane;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Frame;
+
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * The dialog to configure the domain owl panel to decide which
@@ -56,13 +65,13 @@ public class DomainOWLPanelConfigureDlg extends JDialog
         mainPanel.add(instancePanel);
 
         JPanel buttonPanel = new JPanel();
-        //        JCheckBox checkBox =
-        //            new JCheckBox("Not show the dialog next time");
+        JCheckBox checkBox =
+            new JCheckBox("Don't show the dialog next time");
         JButton okBtn = new JButton("OK");
-        //        buttonPanel.add(checkBox);
+        buttonPanel.add(checkBox);
         buttonPanel.add(okBtn);
 
-        add(mainPanel, BorderLayout.CENTER);
+        add(new JScrollPane(mainPanel), BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
         pack();
@@ -91,14 +100,53 @@ public class DomainOWLPanelConfigureDlg extends JDialog
             table = new JTable(new MetaRelationConfigTableModel());
             break;
         case INSTANCE_TABLE:
-            title = "Instances:";
+            title = "Individuals:";
             table = new JTable(new InstanceConfigTableModel());
         }
 
         JPanel configPanel = new JPanel();
         configPanel.setBorder(BorderFactory.createTitledBorder(title));
+
+        table.getColumnModel().getColumn(2).
+            setCellRenderer(new ImageTableCellRenderer());
+        table.getColumnModel().getColumn(2).
+            setCellEditor(new DefaultCellEditor(createImageIconComboBox()));
+
         configPanel.add(new JScrollPane(table));
 
         return configPanel;
+    }
+
+    /**
+     * Creates a combo box for customizing the cell editor for the configure
+     * Table
+     * @return The combo box consisting all of the image icons in the
+     * relative dir of "../resource/icons/"
+     */
+    private JComboBox<ImageIcon> createImageIconComboBox()
+    {
+        JComboBox<ImageIcon> imageIconComboBox = new JComboBox<ImageIcon>();
+        File file =
+            new File(DomainOWLPanel.getPluginDir() + "resources/icons/.");
+
+        String[] pngs = file.list(new FilenameFilter()
+        {
+            @Override
+            public boolean accept(File dir, String name)
+            {
+                return name.endsWith("_16_16.png");
+            }
+        });
+
+        for (String png : pngs)
+        {
+            ImageIcon imageIcon =
+                new ImageIcon(DomainOWLPanel.getPluginDir() +
+                              "resources/icons/" + png);
+            imageIcon.setDescription(png);
+            imageIconComboBox.addItem(imageIcon);
+        }
+
+        return imageIconComboBox;
     }
 }
