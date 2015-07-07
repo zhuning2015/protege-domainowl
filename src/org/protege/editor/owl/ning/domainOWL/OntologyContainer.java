@@ -109,5 +109,4 @@ public class OntologyContainer<T extends NamedObject>
     {
         return ontologyComponents.size();
     }
-
 }
