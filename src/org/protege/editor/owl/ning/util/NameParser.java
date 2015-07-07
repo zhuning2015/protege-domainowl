@@ -3,6 +3,8 @@ package org.protege.editor.owl.ning.util;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLObject;
 
+import javax.swing.JOptionPane;
+
 /**
  * A utility class for parsing name from some elements such as OWLClass
  *
@@ -43,6 +45,12 @@ public class NameParser
         int left = strOWLObject.indexOf("#") + 1;
         int right = strOWLObject.length() - 1;
         return strOWLObject.substring(left, right);
+    }
+
+    public static String getDir(String filePath)
+    {
+        int right = filePath.lastIndexOf('/') + 1;
+        return filePath.substring(0, right);
     }
 
 }
