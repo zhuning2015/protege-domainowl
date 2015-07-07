@@ -5,6 +5,7 @@ import org.protege.editor.owl.ning.domainOWL.MetaOntologyElement;
 import org.protege.editor.owl.ning.exception.BasicException;
 
 import javax.swing.table.AbstractTableModel;
+import javax.swing.ImageIcon;
 
 /**
  * The configure table model for the tables in the domain owl
@@ -90,7 +91,7 @@ public abstract class ConfigTableModel extends AbstractTableModel
         else if (columnIndex == 1)
             return moe.getIsIncluded();
         else
-            return moe.getImagePath();
+            return moe.getIconName();
     }
 
     @Override
@@ -104,7 +105,10 @@ public abstract class ConfigTableModel extends AbstractTableModel
             moe.setIsIncluded(!moe.getIsIncluded());
 
         else if (columnIndex == 2)
-            moe.setImagePath((String)aValue);
+        {
+            ImageIcon imageIcon = (ImageIcon)aValue;
+            moe.setIconName(imageIcon.getDescription());
+        }
     }
 
 }
