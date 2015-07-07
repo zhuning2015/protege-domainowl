@@ -2,6 +2,8 @@ package org.protege.editor.owl.ning.domainOWL;
 
 import org.protege.editor.owl.ning.exception.BasicException;
 
+import java.util.ArrayList;
+
 /**
  * The meta ontology class consisting all of the meta concepts, meta
  * relations and instances in the meta ontology
@@ -18,6 +20,13 @@ public class MetaOntology extends NamedObject
         new OntologyContainer<MetaConcept>();
 
     /**
+     * A cache for selected meta concepts to use to customizing
+     * the domain concepts
+     */
+    private ArrayList<MetaConcept> selectedMetaCncpts =
+        new ArrayList<MetaConcept>();
+
+    /**
      * A Instance-type OntologyContainer storing instances
      */
     private OntologyContainer<Instance> instances =
@@ -29,6 +38,9 @@ public class MetaOntology extends NamedObject
     private OntologyContainer<MetaRelation> metaRelations =
         new OntologyContainer<MetaRelation>();
 
+    /**
+     * The single meta ontology in the domain owl plugin
+     */
     private static MetaOntology singleMetaOntology = null;
 
     private MetaOntology(String name)
@@ -200,5 +212,37 @@ public class MetaOntology extends NamedObject
     public Instance getInstance(int index)
     {
         return instances.getComponent(index);
+    }
+
+    /**
+     * Gets the count of the meta concepts selected to customize for
+     * domain concepts
+     * @return The count of the selected meta concepts
+     */
+    public int getSelectedMetaConceptsCount()
+    {
+        selectedMetaCncpts.clear();
+        int metaCncptCount = getMetaConceptCount();
+        for (int i = 0; i < metaCncptCount; i++)
+        {
+            MetaConcept mc = getMetaConcept(i);
+            if (mc.getIsIncluded())
+            {
+                selectedMetaCncpts.add(mc);
+            }
+        }
+
+        return selectedMetaCncpts.size();
+    }
+
+    /**
+     * Get the index-th of the selected meta concepts to customize
+     * for domain concepts
+     * @param index The index of the selected meta concept in the list
+     * @return The index-th selected meta concept
+     */
+    public MetaConcept getSelectedMetaConcept(int index)
+    {
+        return selectedMetaCncpts.get(index);
     }
 }
