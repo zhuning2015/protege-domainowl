@@ -12,6 +12,7 @@ import org.protege.editor.owl.ning.util.NameParser;
 import org.protege.editor.owl.ning.tab.dialog.DomainOWLPanelConfigureDlg;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListModel;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListCellRenderer;
+import org.protege.editor.owl.ning.tab.dialog.LocalTransferableObject;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -22,8 +23,22 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JList;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -43,6 +58,37 @@ public class DomainOWLPanel extends JPanel
      */
     private static String pluginDir = null;
 
+    /**
+     * The list in the left of the domain owl panel consisting
+     * of meta concepts for developing domain concepts
+     */
+    private JList metaConceptList = null;
+
+    /**
+     * The panel in the left of the domain owl panel for
+     * visualizing the domain concepts and their relations
+     */
+    DomainViewPanel domainViewPanel = null;
+
+    /**
+     * Sets the installed path of the plugin
+     */
+    private void setPluginPath()
+    {
+        String jarPath = this.getClass().getProtectionDomain().
+            getCodeSource().getLocation().getPath();
+        pluginDir = NameParser.getDir(jarPath);
+    }
+
+    /**
+     * Gets the installed dir of the domain owl plugin
+     * @return The installed dir of the domain owl plugin
+     */
+    public static String getPluginDir()
+    {
+        return pluginDir;
+    }
+
     public DomainOWLPanel(OWLModelManager owlMdlMgr)
     {
         createMetaOntology(owlMdlMgr);
@@ -56,25 +102,6 @@ public class DomainOWLPanel extends JPanel
     }
 
     /**
-     * Sets the installed path of the plugin
-     */
-    private void setPluginPath()
-    {
-        String jarPath = this.getClass().getProtectionDomain().
-            getCodeSource().getLocation().getPath();
-        pluginDir = NameParser.getDir(jarPath);
-    }
-    
-    /**
-     * Gets the installed dir of the domain owl plugin
-     * @return The installed dir of the domain owl plugin
-     */
-    public static String getPluginDir()
-    {
-        return pluginDir;
-    }
-
-    /**
      * Creates the meta ontology based on the interface from Protege
      * @param owlMdlMgr The interfce provided by Protege to visit the
      * owl ontology
@@ -82,10 +109,11 @@ public class DomainOWLPanel extends JPanel
     private void createMetaOntology(OWLModelManager owlMdlMgr)
     {
         OWLOntology owlOnt = owlMdlMgr.getActiveOntology();
-        String strOntologyIRI = owlOnt.getOntologyID().
-            getOntologyIRI().toString();
-        metaOnt = MetaOntology.create
-            (NameParser.getOWLOntologyName(strOntologyIRI));
+        String strOntologyIRI =
+            owlOnt.getOntologyID().getOntologyIRI().toString();
+        String owlOntologyName =
+            NameParser.getOWLOntologyName(strOntologyIRI);
+        metaOnt = MetaOntology.create(owlOntologyName);
         fillMetaOntologyFromOWLOntology(owlOnt);
     }
 
@@ -95,12 +123,23 @@ public class DomainOWLPanel extends JPanel
     private void buildUI()
     {
         setLayout(new BorderLayout());
-        JSplitPane splitPane = new JSplitPane();
-        add(splitPane, BorderLayout.CENTER);
+
+        metaConceptList = new JList(new MetaConceptListModel());
+        metaConceptList.setCellRenderer(new MetaConceptListCellRenderer());
+        DragSource dragSource = DragSource.getDefaultDragSource();
+        dragSource.createDefaultDragGestureRecognizer(metaConceptList,
+                                     DnDConstants.ACTION_COPY_OR_MOVE,
+                            new MetaConceptListDragGestureListener());
+        domainViewPanel = new DomainViewPanel();
+        new DropTarget(domainViewPanel, DnDConstants.ACTION_COPY,
+                       new DomainViewPanelDropTargetAdapter());
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                                         new JScrollPane(metaConceptList),
+                                        new JScrollPane(domainViewPanel));
         splitPane.setDividerLocation(64);
-        JList metaElementList = new JList(new MetaConceptListModel());
-        metaElementList.setCellRenderer(new MetaConceptListCellRenderer());
-        splitPane.setLeftComponent(metaElementList);
+
+        add(splitPane, BorderLayout.CENTER);
     }
 
     /**
@@ -196,12 +235,65 @@ public class DomainOWLPanel extends JPanel
             owlIndv.accept(new DomainOWLObjectVisitor(inst));
         }
     }
-    
+
     /**
      * Releases the resources applied if there are some
      */
     public void dispose()
     {
 
+    }
+
+    /**
+     * The implementation of DragGestrueListener for dragging meta concepts
+     * in the metaConceptList into the domainViewPanel to create new domain
+     * concepts
+     */
+    private class MetaConceptListDragGestureListener
+        implements DragGestureListener
+    {
+        @Override
+        public void dragGestureRecognized(DragGestureEvent event)
+        {
+            MetaConcept mc =
+                (MetaConcept)metaConceptList.getSelectedValue();
+
+            Transferable transferable = new LocalTransferableObject(mc);
+            event.startDrag(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR),
+                            transferable);
+        }
+    }
+
+    /**
+     * The customized DropTragetAdapter for response on the drop of meta
+     * concepts into the domainViewPanel to create new domain concepts
+     */
+    private class DomainViewPanelDropTargetAdapter
+        extends DropTargetAdapter
+    {
+        public void drop(DropTargetDropEvent event)
+        {
+            event.acceptDrop(DnDConstants.ACTION_COPY);
+            Transferable transferable =event.getTransferable();
+            try{
+                String mimeType =
+                    "application/x-java-jvm-local-objectref;class=" +
+                    MetaConcept.class.getName();
+                DataFlavor objectRefFlavor =
+                    new DataFlavor(mimeType, MetaConcept.class.getName(),
+                                   MetaConcept.class.getClassLoader());
+                if (transferable.isDataFlavorSupported(objectRefFlavor))
+                {
+                    Object transferData =
+                        transferable.getTransferData(objectRefFlavor);
+                    MetaConcept mc = (MetaConcept) transferData;
+                    domainViewPanel.add(new JLabel(mc.toString()));
+                }
+            }catch(Exception e)
+            {
+                JOptionPane.showMessageDialog(null, e.toString());
+            }
+            event.dropComplete(true);
+        }
     }
 }
