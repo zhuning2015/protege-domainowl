@@ -44,7 +44,8 @@ public class ImageTableCellRenderer extends JPanel implements TableCellRenderer
         cellValue = (String) value;
         if (hasFocus)
         {
-            setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+            setBorder(UIManager.
+                      getBorder("Table.focusCellHighlightBorder"));
         }else
         {
             setBorder(null);
