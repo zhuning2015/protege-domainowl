@@ -4,6 +4,7 @@ import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.domainOWL.DomainRelation;
+import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,5 +90,14 @@ public class TestDomainConcept
         assertTrue(dc.containsIncomingRelation("testRelation"));
         dc.removeIncomingRelation("testRelation");
         assertFalse(dc.containsIncomingRelation("testRelation"));
+    }
+
+    @Test
+    public void testGetSetMetaConcept()
+    {
+        MetaConcept mc = new MetaConcept("TestMC");
+        DomainConcept dc = DomainConcept.create("TestDC");
+        dc.setMetaConcept(mc);
+        assertEquals(mc, dc.getMetaConcept());
     }
 }
