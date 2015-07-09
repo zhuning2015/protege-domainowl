@@ -148,4 +148,13 @@ public class DomainConcept extends NamedObject
     {
         correspond = ins;
     }
+
+    /**
+     * Gets the meta concept of the domain concept
+     * @return The meta concept of the domain concept
+     */
+    public MetaConcept getMetaConcept()
+    {
+        return meta;
+    }
 }
