@@ -8,11 +8,14 @@ import org.protege.editor.owl.ning.domainOWL.MetaRelation;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 import org.protege.editor.owl.ning.domainOWL.Instance;
 import org.protege.editor.owl.ning.domainOWL.DomainOWLObjectVisitor;
+import org.protege.editor.owl.ning.domainOWL.DomainOntology;
+import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.util.NameParser;
 import org.protege.editor.owl.ning.tab.dialog.DomainOWLPanelConfigureDlg;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListModel;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListCellRenderer;
 import org.protege.editor.owl.ning.tab.dialog.LocalTransferableObject;
+import org.protege.editor.owl.ning.tab.graph.DomainViewGraphModel;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -39,6 +42,10 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+
+import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.GraphLayoutCache;
+import org.jgraph.graph.DefaultCellViewFactory;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -99,6 +106,8 @@ public class DomainOWLPanel extends JPanel
                                        "Configure...",
                                        true).setVisible(true);
         buildUI();
+
+        DomainOntology.create("Test");
     }
 
     /**
@@ -130,7 +139,10 @@ public class DomainOWLPanel extends JPanel
         dragSource.createDefaultDragGestureRecognizer(metaConceptList,
                                      DnDConstants.ACTION_COPY_OR_MOVE,
                             new MetaConceptListDragGestureListener());
-        domainViewPanel = new DomainViewPanel();
+        GraphModel model = new DomainViewGraphModel();
+        GraphLayoutCache view = new GraphLayoutCache(model, new DefaultCellViewFactory());
+        domainViewPanel = new DomainViewPanel(model, view);
+
         new DropTarget(domainViewPanel, DnDConstants.ACTION_COPY,
                        new DomainViewPanelDropTargetAdapter());
 
@@ -287,7 +299,9 @@ public class DomainOWLPanel extends JPanel
                     Object transferData =
                         transferable.getTransferData(objectRefFlavor);
                     MetaConcept mc = (MetaConcept) transferData;
-                    domainViewPanel.add(new JLabel(mc.toString()));
+                    DomainConcept dc = DomainConcept.create(mc.getName());
+                    dc.setMetaConcept(mc);
+                    domainViewPanel.addCell(dc);
                 }
             }catch(Exception e)
             {
