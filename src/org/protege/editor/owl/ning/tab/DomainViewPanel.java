@@ -11,6 +11,7 @@ import org.jgraph.graph.GraphConstants;
 
 import javax.swing.JScrollPane;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,8 +34,12 @@ public class DomainViewPanel extends JGraph
     public void addCell(DomainConcept dc)
     {
         DefaultGraphCell cell = new DefaultGraphCell(dc);
-        GraphConstants.setBounds(cell.getAttributes(), new Rectangle2D.Double(20,20,40,20));
-        GraphConstants.setGradientColor(cell.getAttributes(), Color.orange);
+        GraphConstants.setBounds(cell.getAttributes(), new Rectangle2D.Double(20,20,60,60));
+        String iconName = dc.getMetaConcept().getIconName();
+        iconName = iconName.replace("16", "32");
+        ImageIcon imageIcon = new ImageIcon(DomainOWLPanel.getPluginDir() + "resources/icons/" +
+                                            iconName);
+        GraphConstants.setIcon(cell.getAttributes(),imageIcon);
         GraphConstants.setOpaque(cell.getAttributes(), true);
         getGraphLayoutCache().insert(cell);
         getGraphLayoutCache().setVisible(cell, true);
