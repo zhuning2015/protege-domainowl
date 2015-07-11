@@ -157,4 +157,10 @@ public class DomainConcept extends NamedObject
     {
         return meta;
     }
+
+    @Override
+    public String toString()
+    {
+        return getName();
+    }
 }
