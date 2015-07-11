@@ -118,10 +118,8 @@ public class DomainOWLPanel extends JPanel
     private void createMetaOntology(OWLModelManager owlMdlMgr)
     {
         OWLOntology owlOnt = owlMdlMgr.getActiveOntology();
-        String strOntologyIRI =
-            owlOnt.getOntologyID().getOntologyIRI().toString();
-        String owlOntologyName =
-            NameParser.getOWLOntologyName(strOntologyIRI);
+        String strOntologyIRI = owlOnt.getOntologyID().getOntologyIRI().toString();
+        String owlOntologyName = NameParser.getOWLOntologyName(strOntologyIRI);
         metaOnt = MetaOntology.create(owlOntologyName);
         fillMetaOntologyFromOWLOntology(owlOnt);
     }
