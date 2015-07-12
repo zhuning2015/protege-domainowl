@@ -15,7 +15,6 @@ import org.protege.editor.owl.ning.tab.dialog.DomainOWLPanelConfigureDlg;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListModel;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListCellRenderer;
 import org.protege.editor.owl.ning.tab.dialog.LocalTransferableObject;
-import org.protege.editor.owl.ning.tab.graph.DomainViewGraphModel;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -44,6 +43,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
 import org.jgraph.graph.GraphModel;
+import org.jgraph.graph.DefaultGraphModel;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.DefaultCellViewFactory;
 
@@ -137,7 +137,7 @@ public class DomainOWLPanel extends JPanel
         dragSource.createDefaultDragGestureRecognizer(metaConceptList,
                                      DnDConstants.ACTION_COPY_OR_MOVE,
                             new MetaConceptListDragGestureListener());
-        GraphModel model = new DomainViewGraphModel();
+        GraphModel model = new DefaultGraphModel();
         GraphLayoutCache view = new GraphLayoutCache(model, new DefaultCellViewFactory());
         domainViewPanel = new DomainViewPanel(model, view);
 
