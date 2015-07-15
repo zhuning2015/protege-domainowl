@@ -82,9 +82,14 @@ public class OntologyContainer<T extends NamedObject>
      * Updates the component in the container from oldName to newName
      * @param component The component to update
      * @param newName The new name of the component
+     * @exception BasicException Throws when the specified name newName
+     * is already used
      */
     public void update(T component, String newName)
     {
+        if (ontologyComponents.containsKey(newName))
+            throw new BasicException("The name " + newName +
+                                     " has already been used!");
         ontologyComponents.remove(component.getName());
         component.setName(newName);
         ontologyComponents.put(newName, component);
