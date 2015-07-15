@@ -15,6 +15,7 @@ import org.protege.editor.owl.ning.tab.dialog.DomainOWLPanelConfigureDlg;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListModel;
 import org.protege.editor.owl.ning.tab.dialog.MetaConceptListCellRenderer;
 import org.protege.editor.owl.ning.tab.dialog.LocalTransferableObject;
+import org.protege.editor.owl.ning.tab.graph.DomainViewGraph;
 
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -25,7 +26,6 @@ import org.semanticweb.owlapi.model.OWLIndividual;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JList;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
@@ -42,10 +42,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
-import org.jgraph.graph.GraphModel;
 import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.DefaultCellViewFactory;
+import org.jgraph.graph.GraphLayoutCache;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -75,7 +74,7 @@ public class DomainOWLPanel extends JPanel
      * The panel in the left of the domain owl panel for
      * visualizing the domain concepts and their relations
      */
-    DomainViewPanel domainViewPanel = null;
+    DomainViewGraph domainViewGraph = null;
 
     /**
      * Sets the installed path of the plugin
@@ -118,8 +117,10 @@ public class DomainOWLPanel extends JPanel
     private void createMetaOntology(OWLModelManager owlMdlMgr)
     {
         OWLOntology owlOnt = owlMdlMgr.getActiveOntology();
-        String strOntologyIRI = owlOnt.getOntologyID().getOntologyIRI().toString();
-        String owlOntologyName = NameParser.getOWLOntologyName(strOntologyIRI);
+        String strOntologyIRI =
+            owlOnt.getOntologyID().getOntologyIRI().toString();
+        String owlOntologyName =
+            NameParser.getOWLOntologyName(strOntologyIRI);
         metaOnt = MetaOntology.create(owlOntologyName);
         fillMetaOntologyFromOWLOntology(owlOnt);
     }
@@ -132,21 +133,24 @@ public class DomainOWLPanel extends JPanel
         setLayout(new BorderLayout());
 
         metaConceptList = new JList(new MetaConceptListModel());
-        metaConceptList.setCellRenderer(new MetaConceptListCellRenderer());
+        metaConceptList.
+            setCellRenderer(new MetaConceptListCellRenderer());
         DragSource dragSource = DragSource.getDefaultDragSource();
         dragSource.createDefaultDragGestureRecognizer(metaConceptList,
                                      DnDConstants.ACTION_COPY_OR_MOVE,
                             new MetaConceptListDragGestureListener());
-        GraphModel model = new DefaultGraphModel();
-        GraphLayoutCache view = new GraphLayoutCache(model, new DefaultCellViewFactory());
-        domainViewPanel = new DomainViewPanel(model, view);
 
-        new DropTarget(domainViewPanel, DnDConstants.ACTION_COPY,
+        DefaultGraphModel model = new DefaultGraphModel();
+        GraphLayoutCache view =
+            new GraphLayoutCache(model, new DefaultCellViewFactory());
+        domainViewGraph = new DomainViewGraph(model, view);
+        new DropTarget(domainViewGraph, DnDConstants.ACTION_COPY,
                        new DomainViewPanelDropTargetAdapter());
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                                         new JScrollPane(metaConceptList),
-                                        new JScrollPane(domainViewPanel));
+        JSplitPane splitPane =
+            new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+                           new JScrollPane(metaConceptList),
+                           new JScrollPane(domainViewGraph));
         splitPane.setDividerLocation(64);
 
         add(splitPane, BorderLayout.CENTER);
@@ -256,7 +260,7 @@ public class DomainOWLPanel extends JPanel
 
     /**
      * The implementation of DragGestrueListener for dragging meta concepts
-     * in the metaConceptList into the domainViewPanel to create new domain
+     * in the metaConceptList into the domainViewGraph to create new domain
      * concepts
      */
     private class MetaConceptListDragGestureListener
@@ -276,7 +280,7 @@ public class DomainOWLPanel extends JPanel
 
     /**
      * The customized DropTragetAdapter for response on the drop of meta
-     * concepts into the domainViewPanel to create new domain concepts
+     * concepts into the domainViewGraph to create new domain concepts
      */
     private class DomainViewPanelDropTargetAdapter
         extends DropTargetAdapter
@@ -299,7 +303,7 @@ public class DomainOWLPanel extends JPanel
                     MetaConcept mc = (MetaConcept) transferData;
                     DomainConcept dc = DomainConcept.create(mc.getName());
                     dc.setMetaConcept(mc);
-                    domainViewPanel.addCell(dc);
+                    domainViewGraph.addCell(dc, event.getLocation());
                 }
             }catch(Exception e)
             {
