@@ -4,6 +4,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.Restriction;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The basic class for MetaConcept and Instance in the meta
@@ -82,5 +83,16 @@ public abstract class MetaNode extends MetaOntologyElement
     public boolean containsRestriction(Restriction restrc)
     {
         return restrictions.contains(restrc);
+    }
+
+    /**
+     * Gets an iterator over the elements in the arraylist
+     * outgoingMetaRelations in a proper sequence
+     * @return An iterator over the elements in outgoingMetaRelations
+     * list in a proper sequence
+     */
+    public Iterator<String> outgoingMetaRelationIterator()
+    {
+        return outgoingMetaRelations.iterator();
     }
 }
