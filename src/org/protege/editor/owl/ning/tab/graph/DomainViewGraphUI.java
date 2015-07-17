@@ -132,11 +132,13 @@ public class DomainViewGraphUI extends BasicGraphUI
         {
             Object oldCell = editingCell;
             GraphCellEditor oldEditor = cellEditor;
+            Object newValue = oldEditor.getCellEditorValue();
+
             DomainConcept dc =
                 (DomainConcept) graphLayoutCache.getModel().
                 getValue(editingCell);
 
-            Object newValue = oldEditor.getCellEditorValue();
+
             if (!dc.getName().equals(newValue))
             {
                 try
@@ -146,7 +148,8 @@ public class DomainViewGraphUI extends BasicGraphUI
                     graph.refresh();
                 }catch(BasicException e)
                 {
-                    JOptionPane.showMessageDialog(null, e.toString());
+                    JOptionPane.showMessageDialog(null,
+                                                  e.toString());
                     graph.clearSelection();
                 }
             }
