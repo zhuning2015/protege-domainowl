@@ -5,13 +5,14 @@ import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The domain concept class representing the customed ontology concept
  * from the meta ontology concept
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainConcept extends NamedObject
 {
@@ -162,5 +163,16 @@ public class DomainConcept extends NamedObject
     public String toString()
     {
         return getName();
+    }
+
+    /**
+     * Gets an iterator over the elements in the arraylist
+     * outgoingRelations in a proper sequence
+     * @return An iterator over the elements in outgoingRelations list
+     * in a proper sequence
+     */
+    public Iterator<String> getOutgoingRelationIterator()
+    {
+        return outgoingRelations.iterator();
     }
 }
