@@ -8,6 +8,7 @@ import org.protege.editor.owl.ning.domainOWL.MetaRelation;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 import org.protege.editor.owl.ning.domainOWL.Instance;
 import org.protege.editor.owl.ning.domainOWL.DomainOWLObjectVisitor;
+import org.protege.editor.owl.ning.domainOWL.DomainOWLClassExpressionVisitor;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.util.NameParser;
@@ -22,6 +23,12 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLIndividual;
+import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLObjectPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLDataPropertyDomainAxiom;
+import org.semanticweb.owlapi.model.OWLDataPropertyRangeAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -184,7 +191,13 @@ public class DomainOWLPanel extends JPanel
             }
             String mcName = NameParser.getSimpleName(owlCls);
             MetaConcept mc = metaOnt.createMetaConcept(mcName);
-            owlCls.accept(new DomainOWLObjectVisitor(mc));
+            DomainOWLClassExpressionVisitor visitor =
+                new DomainOWLClassExpressionVisitor(mc);
+            for (OWLSubClassOfAxiom ce :
+                     owlOnt.getSubClassAxiomsForSubClass(owlCls))
+            {
+                ce.getSuperClass().accept(visitor);
+            }
         }
     }
 
@@ -208,7 +221,27 @@ public class DomainOWLPanel extends JPanel
             MetaRelation mr = metaOnt.createMetaRelation(mrName);
             mr.setMetaRelationType
                 (MetaRelation.MetaRelationType.OBJECT_RELATION);
-            owlObjPrpty.accept(new DomainOWLObjectVisitor(mr));
+
+            for (OWLObjectPropertyDomainAxiom opd :
+                    owlOnt.getObjectPropertyDomainAxioms(owlObjPrpty))
+            {
+                String srcCncpt =
+                    NameParser.getSimpleName(opd.getDomain());
+                mr.addSrc(srcCncpt);
+                MetaConcept mc = MetaOntology.getMetaOntology().
+                    getMetaConcept(srcCncpt);
+                String prptyName =
+                    NameParser.getSimpleName(opd.getProperty());
+                mc.addOutgoingMetaRelation(prptyName);
+            }
+
+            for (OWLObjectPropertyRangeAxiom opr :
+                     owlOnt.getObjectPropertyRangeAxioms(owlObjPrpty))
+            {
+                String dstCncpt =
+                    NameParser.getSimpleName(opr.getRange());
+                mr.addDst(dstCncpt);
+            }
         }
 
     }
@@ -230,7 +263,26 @@ public class DomainOWLPanel extends JPanel
             }
             String mrName = NameParser.getSimpleName(owlDataPrpty);
             MetaRelation mr = metaOnt.createMetaRelation(mrName);
-            owlDataPrpty.accept(new DomainOWLObjectVisitor(mr));
+            for (OWLDataPropertyDomainAxiom dpd :
+                     owlOnt.getDataPropertyDomainAxioms(owlDataPrpty))
+            {
+                String srcCncpt =
+                    NameParser.getSimpleName(dpd.getDomain());
+                mr.addSrc(srcCncpt);
+                MetaConcept mc = MetaOntology.getMetaOntology().
+                    getMetaConcept(srcCncpt);
+                String prptyName =
+                    NameParser.getSimpleName(dpd.getProperty());
+                mc.addOutgoingMetaRelation(prptyName);
+            }
+
+            for (OWLDataPropertyRangeAxiom dpr :
+                     owlOnt.getDataPropertyRangeAxioms(owlDataPrpty))
+            {
+                String dstCncpt =
+                    NameParser.getSimpleName(dpr.getRange());
+                mr.addDst(dstCncpt);
+            }
         }
 
     }
@@ -246,7 +298,18 @@ public class DomainOWLPanel extends JPanel
         {
             String instName = NameParser.getSimpleName(owlIndv);
             Instance inst = metaOnt.createInstance(instName);
-            owlIndv.accept(new DomainOWLObjectVisitor(inst));
+            for(OWLClassExpression ce : owlIndv.getTypes(owlOnt))
+            {
+                OWLClass owlCls =  ce.asOWLClass();
+                if (owlCls != null)
+                {
+                    String metaCncptName =
+                        NameParser.getSimpleName(owlCls);
+                    MetaConcept mc = MetaOntology.getMetaOntology().
+                        getMetaConcept(metaCncptName);
+                    inst.setMetaConcept(mc);
+                }
+            }
         }
     }
 
