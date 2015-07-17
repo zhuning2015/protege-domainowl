@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * relations and instances in the meta ontology
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class MetaOntology extends NamedObject
 {
@@ -108,7 +108,8 @@ public class MetaOntology extends NamedObject
     /**
      * Get the meta concept called mcName in the meta ontology
      * @param mcName The name of the meta concept to get
-     * @return The meta concept to get
+     * @return The meta concept with the name mcName in the meta
+     * ontology
      */
     public MetaConcept getMetaConcept(String mcName)
     {
@@ -155,6 +156,17 @@ public class MetaOntology extends NamedObject
     public int getMetaRelationCount()
     {
         return metaRelations.size();
+    }
+
+    /**
+     * Gets the meta relation called mrName in the meta ontology
+     * @param mrName The name of the meta relation to get
+     * @return The meta relation with the name mrName in the meta
+     * ontology
+     */
+    public MetaRelation getMetaRelation(String mrName)
+    {
+        return metaRelations.getComponent(mrName);
     }
 
     /**
