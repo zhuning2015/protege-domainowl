@@ -27,6 +27,7 @@ public class DomainViewGraph extends JGraph
     public DomainViewGraph(GraphModel model, GraphLayoutCache view)
     {
         super(model, view);
+        setPortsVisible(true);
         setMarqueeHandler(new DomainViewMarqueeHandler(this));
     }
 
