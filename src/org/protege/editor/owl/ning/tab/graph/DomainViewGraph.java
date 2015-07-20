@@ -20,14 +20,13 @@ import java.awt.geom.Rectangle2D;
  * concepts and relations in the domain ontology
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainViewGraph extends JGraph
 {
     public DomainViewGraph(GraphModel model, GraphLayoutCache view)
     {
         super(model, view);
-        setPortsVisible(true);
         setMarqueeHandler(new DomainViewMarqueeHandler(this));
     }
 
@@ -38,6 +37,11 @@ public class DomainViewGraph extends JGraph
         invalidate();
     }
 
+    /**
+     * Add the cell to the graph which consist of the domain concept dc
+     * @param dc The domain concept which the created cell represent for
+     * @param pnt The location of the cell in the graph
+     */
     public void addCell(DomainConcept dc, Point pnt)
     {
         DefaultGraphCell cell = new DefaultGraphCell(dc);
