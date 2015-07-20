@@ -16,7 +16,7 @@ import java.awt.Graphics;
  * The renderer for the table cell to show icons
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class ImageTableCellRenderer extends JPanel implements TableCellRenderer
 {
@@ -34,6 +34,18 @@ public class ImageTableCellRenderer extends JPanel implements TableCellRenderer
      */
     private String cellValue = "";
 
+    /**
+     * The relative path for the icons, setting for different paths for
+     * different kinds of elements
+     */
+    private String relativePath = "";
+
+    public ImageTableCellRenderer(String relativePath)
+    {
+        this.relativePath = relativePath;
+    }
+
+    @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
                                                    boolean isSelected,
@@ -53,11 +65,12 @@ public class ImageTableCellRenderer extends JPanel implements TableCellRenderer
         return this;
     }
 
+    @Override
     public void paint(Graphics g)
     {
         ImageIcon imageIcon =
             new ImageIcon(DomainOWLPanel.getPluginDir() +
-                          "resources/icons/" + cellValue);
+                          relativePath + cellValue);
         g.drawImage(imageIcon.getImage(),
                     (getWidth() - ICON_WIDTH) / 2,
                     (getHeight() - ICON_HEIGHT) / 2,
