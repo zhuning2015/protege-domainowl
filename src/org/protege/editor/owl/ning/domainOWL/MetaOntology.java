@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * relations and instances in the meta ontology
  *
  * @author Zhu Ning
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class MetaOntology extends NamedObject
 {
@@ -213,6 +213,11 @@ public class MetaOntology extends NamedObject
     public int getInstanceCount()
     {
         return instances.size();
+    }
+
+    public Instance getInstance(String instName)
+    {
+        return instances.getComponent(instName);
     }
 
     /**
