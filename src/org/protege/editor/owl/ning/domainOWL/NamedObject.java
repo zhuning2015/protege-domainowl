@@ -6,7 +6,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
  * The base class of classes with the field "name"
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public abstract class NamedObject
 {
@@ -55,5 +55,11 @@ public abstract class NamedObject
 
         if (name.trim().isEmpty())
             throw new BasicException(excptMsgIfBlank);
+    }
+
+    @Override
+    public String toString()
+    {
+        return name;
     }
 }
