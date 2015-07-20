@@ -7,7 +7,6 @@ import org.protege.editor.owl.ning.domainOWL.MetaNode;
 import org.protege.editor.owl.ning.domainOWL.MetaRelation;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 import org.protege.editor.owl.ning.domainOWL.Instance;
-import org.protege.editor.owl.ning.domainOWL.DomainOWLObjectVisitor;
 import org.protege.editor.owl.ning.domainOWL.DomainOWLClassExpressionVisitor;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
@@ -49,9 +48,20 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+import java.util.Iterator;
+
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import org.jgraph.graph.DefaultGraphModel;
 import org.jgraph.graph.DefaultCellViewFactory;
 import org.jgraph.graph.GraphLayoutCache;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.dom4j.DocumentException;
 
 /**
  * The main panel for the DomainOWL plugin
@@ -81,7 +91,13 @@ public class DomainOWLPanel extends JPanel
      * The panel in the left of the domain owl panel for
      * visualizing the domain concepts and their relations
      */
-    DomainViewGraph domainViewGraph = null;
+    private DomainViewGraph domainViewGraph = null;
+
+    /**
+     * The flag to denotate if the configure dialog is shown before
+     * the domain owl panel is created
+     */
+    public static boolean hidesConfigDialog = false;
 
     /**
      * Sets the installed path of the plugin
@@ -108,12 +124,80 @@ public class DomainOWLPanel extends JPanel
 
         setPluginPath();
 
-        new DomainOWLPanelConfigureDlg(null,
-                                       "Configure...",
-                                       true).setVisible(true);
+        try
+        {
+            loadConfig();
+        }catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+
+        if (!hidesConfigDialog)
+        {
+            new DomainOWLPanelConfigureDlg(null,
+                                           "Configure...",
+                                           true).setVisible(true);
+        }
+
         buildUI();
 
         DomainOntology.create("Test");
+    }
+
+    /**
+     * Loads the configure information from the configure file
+     * .configure in the plugin path and configure the domain owl
+     * plugin
+     * @exception FileNotFoundException Throwed when the configure
+     * file is not found
+     * @exception DocumentException Throwed if errors happen when
+     * parsing the xml document
+     */
+    private void loadConfig() throws FileNotFoundException,
+                                     DocumentException
+    {
+        InputStream inputStream = new FileInputStream(pluginDir +
+                                                      ".configure");
+        SAXReader saxReader = new SAXReader();
+        Document doc = saxReader.read(inputStream);
+
+        Element rootElement = doc.getRootElement();
+
+        String hidesFlag =
+            rootElement.attributeValue("hidesConfigDialog");
+        if (hidesFlag.equals("false"))
+            hidesConfigDialog = false;
+        else
+            hidesConfigDialog = true;
+
+        Iterator<Element> it =
+            rootElement.elementIterator("MetaOntologyElement");
+        while (it.hasNext())
+        {
+            Element moeElement = it.next();
+            String moeName = moeElement.getText();
+            MetaConcept mc = metaOnt.getMetaConcept(moeName);
+            if (mc != null)
+            {
+                mc.setIsIncluded(true);
+                mc.setIconName(moeElement.attributeValue("iconName"));
+            }else
+            {
+                MetaRelation mr = metaOnt.getMetaRelation(moeName);
+                if (mr != null)
+                {
+                    mr.setIsIncluded(true);
+                    mr.setIconName(moeElement.
+                                   attributeValue("iconName"));
+                }else
+                {
+                    Instance inst = metaOnt.getInstance(moeName);
+                    inst.setIsIncluded(true);
+                    inst.setIconName(moeElement.
+                                     attributeValue("iconName"));
+                }
+            }
+        }
     }
 
     /**
