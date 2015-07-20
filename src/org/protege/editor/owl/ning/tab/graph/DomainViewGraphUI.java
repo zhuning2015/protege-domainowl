@@ -2,6 +2,8 @@ package org.protege.editor.owl.ning.tab.graph;
 
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
+import org.protege.editor.owl.ning.domainOWL.DomainRelation;
+import org.protege.editor.owl.ning.domainOWL.NamedObject;
 import org.protege.editor.owl.ning.exception.BasicException;
 
 import org.jgraph.graph.CellView;
@@ -26,7 +28,7 @@ import java.awt.event.WindowEvent;
  * cells
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainViewGraphUI extends BasicGraphUI
 {
@@ -134,17 +136,30 @@ public class DomainViewGraphUI extends BasicGraphUI
             GraphCellEditor oldEditor = cellEditor;
             Object newValue = oldEditor.getCellEditorValue();
 
-            DomainConcept dc =
-                (DomainConcept) graphLayoutCache.getModel().
+            NamedObject namedObj =
+                (NamedObject) graphLayoutCache.getModel().
                 getValue(editingCell);
 
 
-            if (!dc.getName().equals(newValue))
+            if (!namedObj.getName().equals(newValue))
             {
                 try
                 {
-                    DomainOntology.getDomainOntology().
-                        updateDomainConcept(dc, newValue.toString());
+                    if (namedObj.getClass() == DomainConcept.class)
+                    {
+                        DomainConcept domainCon =
+                            (DomainConcept)namedObj;
+                        DomainOntology.getDomainOntology().
+                        updateDomainConcept(domainCon,
+                                            newValue.toString());
+                    }else
+                    {
+                        DomainRelation domainR =
+                            (DomainRelation)namedObj;
+                        DomainOntology.getDomainOntology().
+                        updateDomainRelation(domainR,
+                                            newValue.toString());
+                    }
                     graph.refresh();
                 }catch(BasicException e)
                 {
@@ -171,7 +186,7 @@ public class DomainViewGraphUI extends BasicGraphUI
                 graph.requestFocus();
             if (messageGraph)
             {
-                graphLayoutCache.valueForCellChanged(oldCell, dc);
+                graphLayoutCache.valueForCellChanged(oldCell, namedObj);
             }
             updateSize();
             if (oldEditor != null && cellEditorListener != null)
