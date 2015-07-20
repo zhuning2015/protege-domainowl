@@ -12,7 +12,7 @@ import java.util.Iterator;
  * from the meta ontology concept
  *
  * @author Zhu Ning
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class DomainConcept extends NamedObject
 {
@@ -159,12 +159,6 @@ public class DomainConcept extends NamedObject
         return meta;
     }
 
-    @Override
-    public String toString()
-    {
-        return getName();
-    }
-
     /**
      * Gets an iterator over the elements in the arraylist
      * outgoingRelations in a proper sequence
@@ -174,5 +168,31 @@ public class DomainConcept extends NamedObject
     public Iterator<String> getOutgoingRelationIterator()
     {
         return outgoingRelations.iterator();
+    }
+
+    /**
+     * Updates the outgoing relation whose name is originalName to
+     * newName
+     * @param originalName The original name of the outgoing relation
+     * @param newName The new name of the outgoing relation
+     */
+    public void updateOutgoingRelation(String originalName,
+                                       String newName)
+    {
+        int index = outgoingRelations.indexOf(originalName);
+        outgoingRelations.set(index, newName);
+    }
+
+    /**
+     * Updates the incoming relation whose name is originalName to
+     * newName
+     * @param originalName The original name of the incoming relation
+     * @param newName The new name of the incoming relation
+     */
+    public void updateIncomingRelation(String originalName,
+                                       String newName)
+    {
+        int index = incomingRelations.indexOf(originalName);
+        incomingRelations.set(index, newName);
     }
 }
