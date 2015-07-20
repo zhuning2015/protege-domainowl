@@ -4,10 +4,10 @@ import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
 import org.protege.editor.owl.ning.domainOWL.MetaOntology;
 import org.protege.editor.owl.ning.domainOWL.MetaRelation;
+import org.protege.editor.owl.ning.domainOWL.DomainRelation;
 import org.protege.editor.owl.ning.tab.DomainOWLPanel;
 
 import org.jgraph.JGraph;
-import org.jgraph.graph.PortView;
 import org.jgraph.graph.BasicMarqueeHandler;
 import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.DefaultPort;
@@ -34,18 +34,45 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  * Customed BasicMarqueeHandler of JGraph to popup right-click menu
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainViewMarqueeHandler extends BasicMarqueeHandler
 {
-    protected Point2D start, current;
-    protected PortView port, firstPort;
+    /**
+     * The start point of the connecting line when connecting two cells
+     */
+    private Point2D start;
+    /**
+     * The end point of the connecting line which is the same as the mouse location
+     * when connecting two cells
+     */
+    private Point2D current;
+    /**
+     * The prot of the inital cell
+     */
+    private DefaultPort firstPort;
+    /**
+     * The graph the handler is for
+     */
     private JGraph graph = null;
+    /**
+     * The meta relation which is the object in the edge
+     */
+    private MetaRelation edgeMetaObj = null;
+    /**
+     * The domain concept which is the object in the source cell
+     */
+    private DomainConcept srcDc = null;
+    /**
+     * The domain concept which is the object in the destination cell
+     */
+    private DomainConcept dstDc = null;
 
     public DomainViewMarqueeHandler(JGraph graph)
     {
@@ -65,11 +92,8 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
             return true;
         }
 
-        port = getSourcePortAt(e.getPoint());
-        if (port != null && graph.isPortsVisible())
-        {
+        if (start != null)
             return true;
-        }
 
         return super.isForceMarqueeEvent(e);
     }
@@ -77,104 +101,98 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
     @Override
     public void mousePressed(final MouseEvent e)
     {
+        DefaultGraphCell cell = getCellAt(e.getPoint());
+
         if(SwingUtilities.isRightMouseButton(e))
         {
-            Object cell = graph.getFirstCellForLocation(e.getX(),
-                                                        e.getY());
+            stopDrawLine();
             if (cell != null)
             {
                 JPopupMenu menu = createPopupMenu(e.getPoint(), cell);
                 menu.show(graph, e.getX(), e.getY());
             }
-        }else if (port != null && graph.isPortsVisible())
-        {
-            start = graph.toScreen(port.getLocation());
-            firstPort = port;
         }else
         {
+            if (cell != null)
+            {
+                dstDc = (DomainConcept)graph.getModel().getValue(cell);
+                DefaultPort secondPort = null;
+                if (cell.getChildCount() > 0)
+                    secondPort = (DefaultPort)cell.getChildAt(0);
+                if (secondPort == null)
+                {
+                    secondPort = new DefaultPort();
+                    cell.add(secondPort);
+                }
+                connect(firstPort, secondPort);
+            }else
+            {
+
+            }
+            stopDrawLine();
             super.mousePressed(e);
         }
     }
 
+    /**
+     * Clears the flags for drawing connecting lines and refresh the graph
+     */
+    private void stopDrawLine()
+    {
+        start = null;
+        current = null;
+        graph.repaint();
+    }
+
+    /**
+     * Gets the cell at the position pt in the graph
+     * @param The position to find the cell
+     * @return The cell at the specified position pt, null if there is not a
+     * cell there
+     */
+    private DefaultGraphCell getCellAt(Point pt)
+    {
+        Object cellObj = graph.getFirstCellForLocation(pt.getX(),
+                                                    pt.getY());
+        DefaultGraphCell cell = (DefaultGraphCell)cellObj;
+        return cell;
+    }
+
     @Override
-    public void mouseDragged(MouseEvent e)
+    public void mouseMoved(MouseEvent e)
     {
         if (start != null)
         {
             Graphics g = graph.getGraphics();
-            PortView newPort = getTargetPortAt(e.getPoint());
-            if (newPort == null || newPort != port)
-            {
-                paintConnector(Color.black, graph.getBackground(), g);
-                port = newPort;
-                if (port != null)
-                {
-                    current = graph.toScreen(port.getLocation());
-                }else
-                {
-                    current = graph.snap(e.getPoint());
-                }
-                paintConnector(graph.getBackground(), Color.black, g);
-            }
-        }
+            DefaultGraphCell cell = getCellAt(e.getPoint());
+            paintConnector(Color.black, graph.getBackground(), g);
+            current = graph.snap(e.getPoint());
+            paintConnector(graph.getBackground(), Color.black, g);
+            if (cell != null)
+             {
+                 graph.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                 e.consume();
+             }
 
-        super.mouseDragged(e);
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e)
-    {
-        if (e != null && port != null && firstPort != null &&
-            firstPort != port)
-        {
-            connect((Port)firstPort.getCell(), (Port)port.getCell());
-            e.consume();
-        }else
-            graph.repaint();
-
-        firstPort = port = null;
-        start = current = null;
-
-        super.mouseReleased(e);
-    }
-
-    public void mouseMoved(MouseEvent e)
-    {
-        if (e != null && getSourcePortAt(e.getPoint()) != null &&
-            graph.isPortsVisible())
-        {
-            graph.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            e.consume();
         }else
             super.mouseMoved(e);
     }
 
-    private PortView getSourcePortAt(Point2D point)
-    {
-        graph.setJumpToDefaultPort(false);
-        PortView result;
-        try
-        {
-            result = graph.getPortViewAt(point.getX(), point.getY());
-        }finally
-        {
-            graph.setJumpToDefaultPort(true);
-        }
-        return result;
-    }
 
-    private PortView getTargetPortAt(Point2D point)
-    {
-        return graph.getPortViewAt(point.getX(), point.getY());
-    }
-
+    /**
+     * Creates the pop-up menu when righclicking the cell
+     * @param pt The point to show the pop-up menu
+     * @param cell The cell clicked
+     * @return The popup menu which should be shown when the cell
+     * is clicked
+     */
     private JPopupMenu createPopupMenu(final Point pt,
                                        final Object cell)
     {
         JPopupMenu menu = new JPopupMenu();
         DomainConcept dc =
             (DomainConcept)graph.getModel().getValue(cell);
-
+        srcDc = dc;
         MetaConcept mc = dc.getMetaConcept();
         Iterator<String> it = mc.outgoingMetaRelationIterator();
         while(it.hasNext())
@@ -185,34 +203,31 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
             if (mr.getIsIncluded())
             {
                 String iconPath = DomainOWLPanel.getPluginDir() +
-                    "resources/icons/" +
+                    "resources/icons/edgeEnds/" +
                     mr.getIconName();
                 ImageIcon icon = new ImageIcon(iconPath);
                 JMenuItem menuItem = new JMenuItem(mr.getName(), icon);
-                menuItem.addActionListener(new ActionListener()
-                {
-                    public void actionPerformed(ActionEvent ae)
-                    {
-                        DefaultGraphCell graphCell =
-                            (DefaultGraphCell) cell;
-                        DefaultPort defaultPort = new DefaultPort();
-                        graphCell.add(defaultPort);
-                    }
-                });
+                ActionListener menuItemListener =
+                    new CellMenuItemActionListener(mr, cell);
+                menuItem.addActionListener(menuItemListener);
                 menu.add(menuItem);
             }
         }
         return menu;
     }
 
+    /**
+     * Paints the connector when connecting two cells
+     * @param fg The foreground color
+     * @param bg The backgraoud color
+     * @param g  The graphics interface
+     */
     private void paintConnector(Color fg, Color bg, Graphics g)
     {
         if (graph.isXorEnabled())
         {
             g.setColor(fg);
             g.setXORMode(bg);
-            paintPort(graph.getGraphics());
-
             drawConnectorLine(g);
         }else
         {
@@ -227,10 +242,10 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
 
             dirty.grow(1, 1);
             graph.repaint(dirty);
-            //            highlight(graph, port);
         }
     }
 
+    @Override
     public void paint(JGraph graph, Graphics g)
     {
         super.paint(graph, g);
@@ -241,6 +256,10 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
         }
     }
 
+    /**
+     * Draw the connecting line between two cells
+     * @param g The graphic interface
+     */
     private void drawConnectorLine(Graphics g)
     {
         if (firstPort != null && start != null && current != null)
@@ -250,25 +269,19 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
         }
     }
 
-    private void paintPort(Graphics g)
-    {
-        if (port != null)
-        {
-            boolean o = (
-               GraphConstants.getOffset(port.getAllAttributes()) != null
-             );
-            Rectangle2D r =
-                o ? port.getBounds() : port.getParentView().getBounds();
-            r = graph.toScreen((Rectangle2D) r.clone());
-            r.setFrame(r.getX() - 3, r.getY() - 3, r.getWidth() + 6,
-                       r.getHeight() + 6);
-            graph.getUI().paintCell(g, port, r, true);
-        }
-    }
-
+    /**
+     * Connects two cells from their ports with eges
+     * @param source The port of the source cell
+     * @param target The port of the target cell
+     */
     private void connect(Port source, Port target)
     {
-        DefaultEdge edge = createDefaultEdge();
+        DomainRelation dr =
+            DomainRelation.create(edgeMetaObj.getName());
+        dr.setSrc(srcDc);
+        dr.setDst(dstDc);
+        dr.setMetaRelation(edgeMetaObj);
+        DefaultEdge edge = createDefaultEdge(dr);
         if (graph.getModel().acceptsSource(edge, source) &&
             graph.getModel().acceptsTarget(edge, target))
         {
@@ -276,18 +289,99 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
             graph.getGraphLayoutCache().insertEdge(edge, source,
                                                    target);
         }
+        edgeMetaObj = null;
+        srcDc = null;
+        dstDc = null;
     }
 
-    private DefaultEdge createDefaultEdge()
+    /**
+     * Creates the default edge connecting two cells
+     * @param dr The domain relation which dwells in the edge
+     * @return The created edge
+p     */
+    private DefaultEdge createDefaultEdge(DomainRelation dr)
     {
-        return new DefaultEdge();
+        return new DefaultEdge(dr);
     }
 
     private Map createEdgeAttributes()
     {
         Map map = new Hashtable();
-        GraphConstants.setLineEnd(map, GraphConstants.ARROW_SIMPLE);
+        String iconName = edgeMetaObj.getIconName();
+        if (iconName.contains("Circle"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_CIRCLE);
+        }else if (iconName.contains("Technique"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_TECHNICAL);
+        }else if (iconName.contains("Classic"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_CLASSIC);
+        }else if (iconName.contains("Diamond"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_DIAMOND);
+        }else if (iconName.contains("DoubleLine"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_DOUBLELINE);
+        }else if (iconName.contains("Line") &&
+                  !iconName.contains("DoubleLine"))
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_LINE);
+        }else
+        {
+            GraphConstants.setLineBegin(map,
+                                      GraphConstants.ARROW_SIMPLE);
+        }
+        if (iconName.contains("Fill"))
+                GraphConstants.setEndFill(map, true);
         GraphConstants.setLabelAlongEdge(map, true);
         return map;
+    }
+
+    private class CellMenuItemActionListener implements ActionListener
+    {
+        /**
+         * The meta relation which the menu item is corresponding to
+         */
+        private MetaRelation mr = null;
+
+        /**
+         * The current cell where the menu item is popped up
+         */
+        private Object cell = null;
+
+        public CellMenuItemActionListener(MetaRelation mr,
+                                          Object cell)
+        {
+            this.mr = mr;
+            this.cell = cell;
+        }
+
+        public void actionPerformed(ActionEvent e)
+        {
+            DefaultGraphCell graphCell = (DefaultGraphCell) cell;
+            DefaultPort defaultPort = null;
+            edgeMetaObj = mr;
+            if (graphCell != null && graphCell.getChildCount() > 0)
+            {
+                defaultPort = (DefaultPort)graphCell.getChildAt(0);
+            }else
+            {
+                defaultPort = new DefaultPort();
+                graphCell.add(defaultPort);
+            }
+            Rectangle2D bounds =
+                GraphConstants.getBounds(graphCell.getAttributes());
+            double x = bounds.getX() + bounds.getWidth()  / 2;
+            double y = bounds.getY() + bounds.getHeight() / 2;
+            start = new Point2D.Double(x, y);
+            firstPort = defaultPort;
+        }
     }
 }
