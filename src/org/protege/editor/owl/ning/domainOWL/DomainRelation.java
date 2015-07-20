@@ -3,25 +3,26 @@ package org.protege.editor.owl.ning.domainOWL;
 import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainOntology;
 import org.protege.editor.owl.ning.domainOWL.MetaRelation;
+import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 
 /**
  * The domain relation class representing the customized relation from
  * the meta ontology relation
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainRelation extends NamedObject
 {
     /**
-     * The name of the source domain concept of the relation
+     * The source domain concept of the relation
      */
-    private String srcDcName = "";
+    private DomainConcept srcDc = null;
 
     /**
-     * The name of the destination concept of the relation
+     * The destination concept of the relation
      */
-    private String dstDcName = "";
+    private DomainConcept dstDc = null;
 
     /**
      * The corresponding meta relation in the meta ontology
@@ -41,7 +42,9 @@ public class DomainRelation extends NamedObject
      */
     public static DomainRelation create(String name)
     {
-        checkName(name, "The name of the specified domain relation is null", "The chars consisting the name of the specified domain relation are all spaces");
+        checkName(name,
+                  "The name of the specified domain relation is null",
+                  "The chars in the name are all spaces");
 
         DomainRelation dr = new DomainRelation(name);
 
@@ -53,49 +56,40 @@ public class DomainRelation extends NamedObject
 
     /**
      * Sets the source domain concept of the relation
-     * @param srcDcName The name of the source domain concept
-     * @exception BasicException Throws when the source domain concept
-     *        is not existent
+     * @param srcDc The source domain concept
      */
-    public void setSrc(String srcDcName)
+    public void setSrc(DomainConcept srcDc)
     {
-        DomainOntology dt = DomainOntology.getDomainOntology();
-        if (!dt.containsDomainConcept(srcDcName))
-            throw new BasicException("Source domain concept" + srcDcName+" is not existent");
-        this.srcDcName = srcDcName;
+        this.srcDc = srcDc;
+        srcDc.addOutgoingRelation(getName());
     }
 
     /**
-     * Get the name of the source domain concept
-     * @return The name of the source domain concept
+     * Get the source domain concept
+     * @return The source domain concept
      */
-    public String getSrc()
+    public DomainConcept getSrc()
     {
-        return srcDcName;
+        return srcDc;
     }
 
     /**
      * Sets the destination domain concept of the relation
-     * @param dstDcName The name of the destination domain concept
-     * @exception BasicException Throws when the destination domain
-     *        concept is not existent
+     * @param dstDc The destination domain concept
      */
-    public void setDst(String dstDcName)
+    public void setDst(DomainConcept dstDc)
     {
-        DomainOntology dt = DomainOntology.getDomainOntology();
-        if (!dt.containsDomainConcept(dstDcName))
-            throw new BasicException("The destination domain concept "
-                                     + dstDcName+" is not existent");
-        this.dstDcName = dstDcName;
+        this.dstDc = dstDc;
+        dstDc.addIncomingRelation(getName());
     }
 
     /**
-     * Gets the name of the destination domain concept of the relation
-     * @return The name of the destination domain concept
+     * Gets the destination domain concept of the relation
+     * @return The destination domain concept
      */
-    public String getDst()
+    public DomainConcept getDst()
     {
-        return dstDcName;
+        return dstDc;
     }
 
     /**
@@ -105,5 +99,20 @@ public class DomainRelation extends NamedObject
     public void setMetaRelation(MetaRelation mr)
     {
         meta = mr;
+    }
+
+    @Override
+    public void setName(String name)
+    {
+        if (srcDc != null)
+        {
+            srcDc.updateOutgoingRelation(getName(), name);
+        }
+
+        if (dstDc != null)
+        {
+            dstDc.updateIncomingRelation(getName(), name);
+        }
+        super.setName(name);
     }
 }
