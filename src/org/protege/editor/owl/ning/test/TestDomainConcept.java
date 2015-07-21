@@ -5,6 +5,7 @@ import org.protege.editor.owl.ning.exception.BasicException;
 import org.protege.editor.owl.ning.domainOWL.DomainConcept;
 import org.protege.editor.owl.ning.domainOWL.DomainRelation;
 import org.protege.editor.owl.ning.domainOWL.MetaConcept;
+import org.protege.editor.owl.ning.domainOWL.MetaOntology;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,16 +15,18 @@ import static org.junit.Assert.*;
  * The test class for DomainConcept
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class TestDomainConcept
 {
     DomainOntology domainOnt = null;
+    MetaOntology metaOnt = null;
 
     @Before
     public void init()
     {
         domainOnt = DomainOntology.create("TestOntology");
+        metaOnt = MetaOntology.create("TestMetaOntology");
     }
 
     @Test
@@ -95,7 +98,7 @@ public class TestDomainConcept
     @Test
     public void testGetSetMetaConcept()
     {
-        MetaConcept mc = new MetaConcept("TestMC");
+        MetaConcept mc = metaOnt.createMetaConcept("TestMC");
         DomainConcept dc = DomainConcept.create("TestDC");
         dc.setMetaConcept(mc);
         assertEquals(mc, dc.getMetaConcept());
