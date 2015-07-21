@@ -10,28 +10,100 @@ import org.protege.editor.owl.ning.domainOWL.DomainConcept;
  * the meta ontology relation
  *
  * @author Zhu Ning
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class DomainRelation extends NamedObject
 {
     /**
-     * The source domain concept of the relation
+     * The name of the source domain concept of the relation
      */
-    private DomainConcept srcDc = null;
+    private String srcDcName = "";
 
     /**
-     * The destination concept of the relation
+     * Gets the name of the source domain concept
+     * @return The name of the source domain concept of the
+     * domain relation
      */
-    private DomainConcept dstDc = null;
+    public String getSrcDcName()
+    {
+        return srcDcName;
+    }
 
     /**
-     * The corresponding meta relation in the meta ontology
+     * Sets the name of the source domain concept
+     * @param srcDcName The name of the specified source domain concept
+     * for the domain relation
      */
-    private MetaRelation meta = null;
+    public void setSrcDcName(String srcDcName)
+    {
+        this.srcDcName = srcDcName;
+    }
 
-    public DomainRelation(String name)
+    /**
+     * The name of the destination concept of the relation
+     */
+    private String dstDcName = "";
+
+    /**
+     * Gets the name of the destination concept of the domain
+     * relation
+     * @return The name of the destination concept for the domain
+     * relation
+     */
+    public String getDstDcName()
+    {
+        return dstDcName;
+    }
+
+    /**
+     * Sets the name of the destination concept
+     * @param dstDcName The name of the specified destination concept
+     */
+    public void setDstDcName(String dstDcName)
+    {
+        this.dstDcName = dstDcName;
+    }
+
+    /**
+     * The name of the corresponding meta relation in the meta ontology
+     */
+    private String metaRelationName = "";
+
+    /**
+     * Gets the name of the meta relation
+     * @return The name of the meta relation for the domain relation
+     */
+    public String getMetaRelationName()
+    {
+        return metaRelationName;
+    }
+
+    /**
+     * Sets the name of the meta relation
+     * @param metaRelationName The name of the specified meta relation
+     */
+    public void setMetaRelationName(String metaRelationName)
+    {
+        this.metaRelationName = metaRelationName;
+    }
+
+    private DomainRelation(String name)
     {
         super(name);
+    }
+
+    public DomainRelation(String name,
+                          String srcDcName,
+                          String dstDcName,
+                          String metaRelationName)
+    {
+        super(name);
+        setSrcDcName(srcDcName);
+        setDstDcName(dstDcName);
+        setMetaRelationName(metaRelationName);
+
+        DomainOntology dt = DomainOntology.getDomainOntology();
+        dt.addDomainRelation(this);
     }
 
     /**
@@ -55,12 +127,12 @@ public class DomainRelation extends NamedObject
     }
 
     /**
-     * Sets the source domain concept of the relation
+     * Links the source domain concept of the relation
      * @param srcDc The source domain concept
      */
-    public void setSrc(DomainConcept srcDc)
+    public void linkToSrc(DomainConcept srcDc)
     {
-        this.srcDc = srcDc;
+        srcDcName = srcDc.getName();
         srcDc.addOutgoingRelation(getName());
     }
 
@@ -70,16 +142,17 @@ public class DomainRelation extends NamedObject
      */
     public DomainConcept getSrc()
     {
-        return srcDc;
+        DomainOntology domainOnt =  DomainOntology.getDomainOntology();
+        return domainOnt.getDomainConcept(srcDcName);
     }
 
     /**
-     * Sets the destination domain concept of the relation
+     * Links the destination domain concept of the relation
      * @param dstDc The destination domain concept
      */
-    public void setDst(DomainConcept dstDc)
+    public void linkToDst(DomainConcept dstDc)
     {
-        this.dstDc = dstDc;
+        dstDcName = dstDc.getName();
         dstDc.addIncomingRelation(getName());
     }
 
@@ -89,7 +162,8 @@ public class DomainRelation extends NamedObject
      */
     public DomainConcept getDst()
     {
-        return dstDc;
+        DomainOntology domainOnt =  DomainOntology.getDomainOntology();
+        return domainOnt.getDomainConcept(dstDcName);
     }
 
     /**
@@ -98,21 +172,24 @@ public class DomainRelation extends NamedObject
      */
     public void setMetaRelation(MetaRelation mr)
     {
-        meta = mr;
+        metaRelationName = mr.getName();
     }
 
     @Override
-    public void setName(String name)
+    public void changeName(String name)
     {
+        DomainConcept srcDc = getSrc();
         if (srcDc != null)
         {
             srcDc.updateOutgoingRelation(getName(), name);
         }
 
+        DomainConcept dstDc = getDst();
         if (dstDc != null)
         {
             dstDc.updateIncomingRelation(getName(), name);
         }
+
         super.setName(name);
     }
 }
