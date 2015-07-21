@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * The template class representing containers of domain concepts,
  * domain relations and so on.
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class OntologyContainer<T extends NamedObject>
 {
@@ -91,7 +91,7 @@ public class OntologyContainer<T extends NamedObject>
             throw new BasicException("The name " + newName +
                                      " has already been used!");
         ontologyComponents.remove(component.getName());
-        component.setName(newName);
+        component.changeName(newName);
         ontologyComponents.put(newName, component);
     }
 
