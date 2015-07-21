@@ -20,27 +20,127 @@ public class DomainConcept extends NamedObject
      * A list which consists of all the outgoing relation names of the
      * domain concept.
      */
-    ArrayList<String> outgoingRelations = new ArrayList<String>();
+    private ArrayList<String> outgoingRelations =
+        new ArrayList<String>();
+
+    /**
+     * Gets the names of the outgoing relations of the domain concept
+     * @return The names of the outgoing relations of the domain
+     * concept
+     */
+    public ArrayList<String> getOutgoingRelations()
+    {
+        return outgoingRelations;
+    }
+
+    /**
+     * Sets the outgoing relations of the domain concept, mainly used
+     * for persistence of domain concepts
+     * @param outgoingRelations The names of the outgoing relations
+     * of the domain concept
+     */
+    public void setOutgoingRelations(ArrayList<String>
+                                                  outgoingRelations)
+    {
+        this.outgoingRelations = outgoingRelations;
+    }
 
     /**
      * A list which consists of all the incoming relation names of
      * the domain concept.
      */
-    ArrayList<String> incomingRelations = new ArrayList<String>();
+    private ArrayList<String> incomingRelations =
+        new ArrayList<String>();
 
     /**
-     * The corresponding meta concept in the meta ontology
+     * Gets the names of the incoming relations of the domain concepts
+     * @return The names of the incoming relations of the domain
+     * concept
      */
-    private MetaConcept meta = null;
+    public ArrayList<String> getIncomingRelations()
+    {
+        return incomingRelations;
+    }
 
     /**
-     * The corresponding instance in the meta ontology
+     * Sets the incoming relations of the domain concepts
+     * @param incomingRelations The names of the incoming relations
+     * of the domain concept
      */
-    private Instance correspond = null;
+    public void setIncomingRelations(ArrayList<String>
+                                              incomingRelations)
+    {
+        this.incomingRelations = incomingRelations;
+    }
+
+    /**
+     * The name of the meta concept in the meta ontlogy which
+     * the domain concept correponds to
+     */
+    private String metaConceptName = "";
+
+    /**
+     * Gets the name of the corresponding meta concept
+     * @return The name of the corresponing meta concept
+     */
+    public String getMetaConceptName()
+    {
+        return metaConceptName;
+    }
+
+    /**
+     * Sets the name of the corresponding meta concept
+     * @param The name of the corresponding meta concept
+     */
+    public void setMetaConceptName(String metaConceptName)
+    {
+        this.metaConceptName = metaConceptName;
+    }
+
+    /**
+     * The name of the instance in the meta ontology which
+     * the domain concept corresponds to
+     */
+    private String instanceName = "";
+
+    /**
+     * Gets the name of the corresponding instance
+     * @return The name of the corresponding instance
+     */
+    public String getInstanceName()
+    {
+        return instanceName;
+    }
+
+    /**
+     * Sets the name of the corresponding instance
+     * @param instanceName The name of the specified corresponding
+     * instance
+     */
+    public void setInstanceName(String instanceName)
+    {
+        this.instanceName = instanceName;
+    }
 
     private DomainConcept(String name)
     {
         super(name);
+    }
+
+    public DomainConcept(String name,
+                         ArrayList<String> outgoingRelations,
+                         ArrayList<String> incomingRelations,
+                         String metaConceptName,
+                         String instanceName)
+    {
+        super(name);
+        setOutgoingRelations(outgoingRelations);
+        setIncomingRelations(incomingRelations);
+        setMetaConceptName(metaConceptName);
+        setInstanceName(instanceName);
+
+        DomainOntology dt = DomainOntology.getDomainOntology();
+        dt.addDomainConcept(this);
     }
 
     /**
@@ -52,7 +152,10 @@ public class DomainConcept extends NamedObject
      */
     public static DomainConcept create(String name)
     {
-        checkName(name, "The specified name for the domain concept is empty", "The specified name for the domain concept consists of all spaces");
+        checkName(name,
+                  "The specified name for the domain concept is empty",
+                  "The specified name for the domain concept consists of all spaces");
+
         DomainConcept dc = new DomainConcept(name);
 
         DomainOntology dt = DomainOntology.getDomainOntology();
@@ -136,7 +239,7 @@ public class DomainConcept extends NamedObject
      */
     public void setMetaConcept(MetaConcept mc)
     {
-        meta = mc;
+        metaConceptName = mc.getName();
     }
 
     /**
@@ -147,7 +250,7 @@ public class DomainConcept extends NamedObject
      */
     public void setCorrespondInstance(Instance ins)
     {
-        correspond = ins;
+        instanceName = ins.getName();
     }
 
     /**
@@ -156,7 +259,8 @@ public class DomainConcept extends NamedObject
      */
     public MetaConcept getMetaConcept()
     {
-        return meta;
+        return MetaOntology.getMetaOntology().
+            getMetaConcept(metaConceptName);
     }
 
     /**
@@ -194,5 +298,27 @@ public class DomainConcept extends NamedObject
     {
         int index = incomingRelations.indexOf(originalName);
         incomingRelations.set(index, newName);
+    }
+
+
+    @Override
+    public void changeName(String newName)
+    {
+        setName(newName);
+
+        DomainOntology domainOnt = DomainOntology.getDomainOntology();
+        for(String incomingRelationName : incomingRelations)
+        {
+            DomainRelation dr =
+                domainOnt.getDomainRelation(incomingRelationName);
+            dr.setDstDcName(newName);
+        }
+
+        for(String outgoingRelationName : outgoingRelations)
+        {
+            DomainRelation dr =
+                domainOnt.getDomainRelation(outgoingRelationName);
+            dr.setSrcDcName(newName);
+        }
     }
 }
