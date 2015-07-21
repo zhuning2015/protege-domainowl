@@ -12,7 +12,7 @@ import java.util.Iterator;
  * from the meta ontology concept
  *
  * @author Zhu Ning
- * @version 0.1.2
+ * @version 0.1.3
  */
 public class DomainConcept extends NamedObject
 {
