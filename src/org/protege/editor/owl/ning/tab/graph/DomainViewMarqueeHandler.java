@@ -40,7 +40,7 @@ import javax.swing.JOptionPane;
  * Customed BasicMarqueeHandler of JGraph to popup right-click menu
  *
  * @author Zhu Ning
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class DomainViewMarqueeHandler extends BasicMarqueeHandler
 {
@@ -49,7 +49,8 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
      */
     private Point2D start;
     /**
-     * The end point of the connecting line which is the same as the mouse location
+     * The end point of the connecting line which is the same as the
+     * mouse location
      * when connecting two cells
      */
     private Point2D current;
@@ -278,8 +279,8 @@ public class DomainViewMarqueeHandler extends BasicMarqueeHandler
     {
         DomainRelation dr =
             DomainRelation.create(edgeMetaObj.getName());
-        dr.setSrc(srcDc);
-        dr.setDst(dstDc);
+        dr.linkToSrc(srcDc);
+        dr.linkToDst(dstDc);
         dr.setMetaRelation(edgeMetaObj);
         DefaultEdge edge = createDefaultEdge(dr);
         if (graph.getModel().acceptsSource(edge, source) &&
