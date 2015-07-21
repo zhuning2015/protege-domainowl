@@ -34,6 +34,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -47,12 +49,19 @@ import java.awt.dnd.DragGestureEvent;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import java.util.Iterator;
 
 import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.File;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 
 import org.jgraph.graph.DefaultGraphModel;
 import org.jgraph.graph.DefaultCellViewFactory;
@@ -67,7 +76,7 @@ import org.dom4j.DocumentException;
  * The main panel for the DomainOWL plugin
  *
  * @author Zhu Ning
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class DomainOWLPanel extends JPanel
 {
@@ -245,6 +254,72 @@ public class DomainOWLPanel extends JPanel
         splitPane.setDividerLocation(64);
 
         add(splitPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        JButton newBtn = new JButton("New Domain Ontology");
+        newBtn.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                String newName = JOptionPane.showInputDialog(
+                                              DomainOWLPanel.this,
+                                "The name of new domain ontology",
+                                            "New Domain Ontology",
+                                    JOptionPane.QUESTION_MESSAGE);
+                DomainOntology.create(newName);
+                domainViewGraph.clear();
+            }
+         });
+        JButton saveBtn = new JButton("Save..");
+        saveBtn.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                JFileChooser fileChooser = new JFileChooser();
+                int mode = JFileChooser.FILES_ONLY;
+                fileChooser.setFileSelectionMode(mode);
+                fileChooser.showSaveDialog(DomainOWLPanel.this);
+                File file = fileChooser.getSelectedFile();
+                try
+                {
+                    domainViewGraph.save(
+                                   new BufferedOutputStream(
+                                         new FileOutputStream(file)));
+                }catch(FileNotFoundException e)
+                {
+                    JOptionPane.showMessageDialog(null, e.toString());
+                }
+            }
+        });
+        JButton loadBtn = new JButton("Load..");
+        loadBtn.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent ae)
+            {
+                JFileChooser fileChooser = new JFileChooser();
+                int mode = JFileChooser.FILES_ONLY;
+                fileChooser.setFileSelectionMode(mode);
+                fileChooser.showOpenDialog(DomainOWLPanel.this);
+                File file = fileChooser.getSelectedFile();
+                try
+                {
+                   domainViewGraph.load(
+                              new BufferedInputStream(
+                                      new FileInputStream(file)));
+                }catch(FileNotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
+        buttonPanel.add(newBtn);
+        buttonPanel.add(saveBtn);
+        buttonPanel.add(loadBtn);
+
+        add(buttonPanel, BorderLayout.NORTH);
     }
 
     /**
