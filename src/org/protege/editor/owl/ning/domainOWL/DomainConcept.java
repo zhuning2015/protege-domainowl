@@ -90,7 +90,7 @@ public class DomainConcept extends NamedObject
 
     /**
      * Sets the name of the corresponding meta concept
-     * @param The name of the corresponding meta concept
+     * @param metaConceptName The name of the corresponding meta concept
      */
     public void setMetaConceptName(String metaConceptName)
     {
