@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  * The test class for DomainRelation
  *
  * @author Zhu Ning
- * @version 0.1.1
+ * @version 0.1.2
  */
 public class TestDomainRelation
 {
@@ -33,34 +33,34 @@ public class TestDomainRelation
     }
 
     @Test
-    public void TestSetSrc()
+    public void TestLinkToSrc()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
         DomainConcept dc = DomainConcept.create("dc");
-        dr.setSrc(dc);
+        dr.linkToSrc(dc);
         assertEquals(dc, dr.getSrc());
     }
 
     @Test
-    public void TestSetDst()
+    public void TestLinkToDst()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
         DomainConcept dc = DomainConcept.create("dc");
-        dr.setDst(dc);
+        dr.linkToDst(dc);
         assertEquals(dc, dr.getDst());
     }
 
     @Test
-    public void TestSetName()
+    public void TestChangeName()
     {
         DomainRelation dr = DomainRelation.create("TestRelation");
         DomainConcept src = DomainConcept.create("source");
-        dr.setSrc(src);
+        dr.linkToSrc(src);
         DomainConcept dst = DomainConcept.create("destination");
-        dr.setDst(dst);
+        dr.linkToDst(dst);
         assertFalse(src.containsOutgoingRelation("newTest"));
         assertFalse(dst.containsIncomingRelation("newTest"));
-        dr.setName("newTest");
+        dr.changeName("newTest");
         assertEquals("newTest", dr.getName());
         assertTrue(src.containsOutgoingRelation("newTest"));
         assertTrue(dst.containsIncomingRelation("newTest"));
