@@ -40,6 +40,15 @@ public abstract class NamedObject
     }
 
     /**
+     * Changes the name of the named object to newName
+     * @param newName The new name of the named object
+     */
+    public void changeName(String newName)
+    {
+        name = newName;
+    }
+
+    /**
      * Checks if the name is valid
      * @param name The name specified
      * @param excptMsgIfEmpty The exception message when the name is
